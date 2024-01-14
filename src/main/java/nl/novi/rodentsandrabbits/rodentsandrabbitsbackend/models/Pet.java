@@ -1,8 +1,10 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "pets")
@@ -22,7 +24,8 @@ public class Pet {
     private String diet;
 
 
-    public Pet() {}
+    public Pet() {
+    }
 
     public Pet(Long id, String name, Date birthday, String species, String gender, String details, String medication, String diet) {
         this.id = id;
@@ -35,9 +38,12 @@ public class Pet {
         this.diet = diet;
     }
 
-    @OneToOne
+    @OneToMany(mappedBy = "pet")
+    @JsonIgnore
+    List<DiaryLog> diaryLogs;
 
-
+    @OneToMany(mappedBy = "pet")
+    Reservation reservation;
 
     public Long getId() {
         return id;

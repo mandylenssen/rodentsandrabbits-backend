@@ -1,9 +1,6 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Date;
 
@@ -17,7 +14,6 @@ public class DiaryLog {
     private Long id;
     private Date date;
     private String name;
-    private Pet pet;
 
     public DiaryLog(Long id, Date date, String name, Pet pet) {
         this.id = id;
@@ -25,6 +21,14 @@ public class DiaryLog {
         this.name = name;
         this.pet = pet;
     }
+
+    @ManyToOne
+    @JoinColumn(name = "pet_id")
+    private Pet pet;
+
+
+
+
 
     public DiaryLog() {
 
