@@ -6,15 +6,15 @@ import java.util.Set;
 
 public class UserDto {
 
-    private String username;
-    private String password;
-    private String firstName;
-    private String lastName;
-    private String phoneNumber;
+    public String username;
+    public String password;
+    public String firstName;
+    public String lastName;
+    public String phoneNumber;
     public Boolean enabled;
     public String apikey;
     public Set<Authority> authorities;
-    private String email;
+    public String email;
 
 
     public String getUsername() {

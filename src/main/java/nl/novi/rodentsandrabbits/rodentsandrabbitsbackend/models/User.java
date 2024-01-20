@@ -114,4 +114,11 @@ public class User {
     public void setApikey(String apikey) {
         this.apikey = apikey;
     }
+
+    public void addAuthority(Authority authority) {
+        this.authorities.add(authority);
+    }
+    public void removeAuthority(Authority authority) {
+        this.authorities.remove(authority);
+}
 }
