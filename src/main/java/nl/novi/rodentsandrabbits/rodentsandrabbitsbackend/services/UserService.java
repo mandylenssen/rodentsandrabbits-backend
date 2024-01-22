@@ -21,6 +21,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+
     public List<UserDto> getUsers() {
         List<UserDto> collection = new ArrayList<>();
         List<User> list = userRepository.findAll();
@@ -60,11 +61,12 @@ public class UserService {
         return userRepository.existsById(username);
     }
 
+
+
     private User toUser(UserDto userDto) {
         var user = new User();
 
         user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setPhoneNumber(userDto.getPhoneNumber());
