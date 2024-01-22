@@ -42,8 +42,7 @@ public class Pet {
     @JsonIgnore
     List<DiaryLog> diaryLogs;
 
-    @OneToMany(mappedBy = "pet")
-    Reservation reservation;
+
 
     public Long getId() {
         return id;
