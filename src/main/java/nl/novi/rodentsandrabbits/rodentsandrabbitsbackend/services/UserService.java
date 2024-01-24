@@ -5,7 +5,9 @@ import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Authority;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.User;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.UserRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.RandomStringGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,10 +19,10 @@ public class UserService {
     private final UserRepository userRepository;
 
 
+
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
 
     public List<UserDto> getUsers() {
         List<UserDto> collection = new ArrayList<>();
@@ -73,6 +75,7 @@ public class UserService {
         user.setEnabled(userDto.getEnabled());
         user.setApikey(userDto.getApikey());
         user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
 
         return user;
     }

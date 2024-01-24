@@ -61,7 +61,7 @@ public class AuthenticationController {
 
         final String jwt = jwtUtl.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthenticationResponse());
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 
 
