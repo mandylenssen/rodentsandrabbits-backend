@@ -1,8 +1,8 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.controllers;
 
+import jakarta.validation.Valid;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.UserDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,9 +22,9 @@ public class UserController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto dto) {
+    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto dto) {
         String newUsername = userService.createUser(dto);
-        userService.addAuthority(newUsername, "ROLE_USER");
+        //userService.addAuthority(newUsername, "ROLE_USER");
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(newUsername).toUri();

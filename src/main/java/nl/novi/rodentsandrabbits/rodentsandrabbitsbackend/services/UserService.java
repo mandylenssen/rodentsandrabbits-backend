@@ -6,20 +6,20 @@ import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.User;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.UserRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.RandomStringGenerator;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
-
-    public UserService(UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
 
 
     public List<UserDto> getUsers() {
@@ -49,9 +49,15 @@ public class UserService {
         userDto.setUsername(userDto.email);
         userDto.setEnabled(true);
 
+        var authorities = new HashSet<Authority>();
+        authorities.add(new Authority(userDto.getUsername(), "ROLE_USER"));
+
+        userDto.setAuthorities(authorities);
+
         if (userExists(userDto.getUsername())) {
             throw new IllegalArgumentException("Username already exists");
         }
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         User newUser = userRepository.save(toUser(userDto));
         return newUser.getUsername();
@@ -73,6 +79,8 @@ public class UserService {
         user.setEnabled(userDto.getEnabled());
         user.setApikey(userDto.getApikey());
         user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        user.setAuthorities(userDto.getAuthorities());
 
         return user;
     }
@@ -90,6 +98,7 @@ public class UserService {
         dto.enabled = user.isEnabled();
         dto.apikey = user.getApikey();
         dto.email = user.getEmail();
+        dto.authorities = user.getAuthorities();
 
         return dto;
     }
