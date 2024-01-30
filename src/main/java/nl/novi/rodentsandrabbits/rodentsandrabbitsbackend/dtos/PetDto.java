@@ -13,6 +13,8 @@ public class PetDto {
     private String medication;
     private String diet;
 
+    private String ownerUsername;
+
 
 public PetDto() {}
 
@@ -90,5 +92,13 @@ public PetDto() {}
 
     public void setDiet(String diet) {
         this.diet = diet;
+    }
+
+    public String getOwnerUsername() {
+        return ownerUsername;
+    }
+
+    public void setOwnerUsername(String ownerUsername) {
+        this.ownerUsername = ownerUsername;
     }
 }

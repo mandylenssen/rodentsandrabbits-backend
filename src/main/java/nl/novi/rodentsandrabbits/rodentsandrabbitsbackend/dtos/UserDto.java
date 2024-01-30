@@ -16,6 +16,8 @@ public class UserDto {
     public Set<Authority> authorities;
     public String email;
 
+    public Set<PetDto> pets;
+
 
     public String getUsername() {
         return username;
@@ -87,5 +89,13 @@ public class UserDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Set<PetDto> getPets() {
+        return pets;
+    }
+
+    public void setPets(Set<PetDto> pets) {
+        this.pets = pets;
     }
 }

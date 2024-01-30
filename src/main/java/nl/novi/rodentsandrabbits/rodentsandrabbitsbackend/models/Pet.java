@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 
 @Entity
 @Table(name = "pets")
@@ -23,6 +25,17 @@ public class Pet {
     private String medication;
     private String diet;
 
+    @ManyToOne
+    @JoinColumn(name = "owner")
+    private User owner;
+
+
+    @ManyToMany()
+    private Set<Reservation> reservations;
+
+    @OneToMany(mappedBy = "pet")
+    @JsonIgnore
+    List<DiaryLog> diaryLogs;
 
     public Pet() {
     }
@@ -38,9 +51,7 @@ public class Pet {
         this.diet = diet;
     }
 
-    @OneToMany(mappedBy = "pet")
-    @JsonIgnore
-    List<DiaryLog> diaryLogs;
+
 
 
 
@@ -106,5 +117,13 @@ public class Pet {
 
     public void setDiet(String diet) {
         this.diet = diet;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }

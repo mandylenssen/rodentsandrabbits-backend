@@ -1,21 +1,24 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "reservations")
 public class Reservation {
     @Id
     @GeneratedValue
-
     private Long id;
+
     private Date startDate;
     private Date endDate;
+
+    @ManyToMany()
+    private Set<Pet> pets;
+
+
 
     public Reservation(Long id, Date startDate, Date endDate) {
         this.id = id;

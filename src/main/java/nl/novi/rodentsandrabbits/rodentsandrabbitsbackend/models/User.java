@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -41,6 +42,9 @@ public class User {
 
     @Column
     private String email;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Pet> pets;
 
 
     public String getUsername() {
@@ -121,4 +125,19 @@ public class User {
     public void removeAuthority(Authority authority) {
         this.authorities.remove(authority);
 }
+
+//    public Set<Pet> getPets() {
+//        return pets;
+//    }
+
+    public List<Pet> getPets() {
+        return pets;
+    }
+
+    public void setPets(List<Pet> pets) {
+        this.pets = pets;
+    }
+//    public void setPets(Set<Pet> pets) {
+//        this.pets = pets;
+//    }
 }
