@@ -3,6 +3,7 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.PetDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.PetRepository;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.UserRepository;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
@@ -16,19 +17,18 @@ public class PetService {
 
     private final PetRepository petRepository;
 
+    private final UserRepository userRepository;
 
-    public PetService(PetRepository petRepository) {
+    public PetService(PetRepository petRepository, UserRepository userRepository) {
         this.petRepository = petRepository;
+        this.userRepository = userRepository;
     }
-
 
     public PetDto addPet(PetDto dto) {
         Pet pet = transferToPet(dto);
         petRepository.save(pet);
         return transferToDto(pet);
     }
-
-
 
 
     public PetDto updatePet(PetDto dto) {
@@ -73,7 +73,7 @@ return transferPetListToDtoList(pets);
 //        petRepository.deleteById(id);
 //    }
 
-    public List<PetDto> getPetsByOwnerId(String username) {
+    public List<PetDto> getPetByOwnerId(String username) {
         List<Pet> pets = petRepository.findAllByOwnerUsername(username);
         return transferPetListToDtoList(pets);
     }
@@ -91,6 +91,7 @@ return transferPetListToDtoList(pets);
         pet.setDetails(dto.getDetails());
         pet.setMedication(dto.getMedication());
         pet.setDiet(dto.getDiet());
+        pet.setOwner(userRepository.findByUsername(dto.getOwnerUsername()).orElseThrow());
 
         return pet;
     }
@@ -118,6 +119,11 @@ return transferPetListToDtoList(pets);
     public List<PetDto> getAllPetsByName(String name) {
         List<Pet> pets = petRepository.findAllPetsByName(name);
         return transferPetListToDtoList(pets);
+    }
+
+    public List<PetDto> getAllPetsByUsername(String username) {
+    List<Pet> pets = petRepository.findAllByOwnerUsername(username);
+    return transferPetListToDtoList(pets);
     }
 }
 

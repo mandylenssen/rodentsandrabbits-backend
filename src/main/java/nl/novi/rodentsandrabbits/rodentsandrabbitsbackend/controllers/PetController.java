@@ -6,6 +6,7 @@ import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services.PetService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,31 +22,30 @@ public class PetController {
 
     @PostMapping("/pets")
     public ResponseEntity<Object> addPet(@Valid @RequestBody PetDto petDto) {
-
-        PetDto dto = petService.addPet(petDto);
-
-        return ResponseEntity.created(null).body(dto);
+        PetDto createdPetDto = petService.addPet(petDto);
+        return ResponseEntity.created(null).body(createdPetDto);
 
     }
 
     @GetMapping("/pets")
-    public ResponseEntity<List> getAllPets(@RequestParam(value = "name", required = false) Optional<String> name) {
+    public ResponseEntity<List<PetDto>> getAllPets(@RequestParam(value = "name", required = false) Optional<String> name) {
 
         List<PetDto> dtos;
 
         if (name.isEmpty()) {
-
             dtos = petService.getAllPets();
-
         } else {
-
             dtos = petService.getAllPetsByName(name.get());
-
         }
         return ResponseEntity.ok().body(dtos);
     }
 
 
+@GetMapping("/pets/{username}")
+    public ResponseEntity<List<PetDto>> getPetsByUsername(@PathVariable("username") String username) {
+        List<PetDto> dtos = petService.getAllPetsByUsername(username);
+        return ResponseEntity.ok().body(dtos);
+    }
 
 
 }

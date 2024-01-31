@@ -40,7 +40,7 @@ public class Pet {
     public Pet() {
     }
 
-    public Pet(Long id, String name, Date birthday, String species, String gender, String details, String medication, String diet) {
+    public Pet(Long id, String name, Date birthday, String species, String gender, String details, String medication, String diet, User owner) {
         this.id = id;
         this.name = name;
         this.birthday = birthday;
@@ -49,6 +49,7 @@ public class Pet {
         this.details = details;
         this.medication = medication;
         this.diet = diet;
+        this.owner = owner;
     }
 
 
@@ -126,4 +127,21 @@ public class Pet {
     public void setOwner(User owner) {
         this.owner = owner;
     }
+
+    public Set<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(Set<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    public List<DiaryLog> getDiaryLogs() {
+        return diaryLogs;
+    }
+
+    public void setDiaryLogs(List<DiaryLog> diaryLogs) {
+        this.diaryLogs = diaryLogs;
+    }
+
 }
