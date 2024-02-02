@@ -5,6 +5,7 @@ import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.PetRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.UserRepository;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,8 +32,12 @@ public class PetService {
     }
 
 
-    public PetDto updatePet(PetDto dto) {
-        Pet pet = petRepository.findById(dto.getId()).orElseThrow();
+    public PetDto updatePet(Long petId, PetDto dto, String username) {
+        Pet pet = petRepository.findById(petId).orElseThrow();
+
+        if (!username.equals(pet.getOwner().getUsername())) {
+            throw new AuthorizationServiceException("Pet does not belong to user");
+        }
 
         pet.setName(dto.getName());
         pet.setBirthday(dto.getBirthday());

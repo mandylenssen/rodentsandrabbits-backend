@@ -14,8 +14,8 @@ import java.util.Optional;
 public class PetController {
 
     private final PetService petService;
-
     public PetController(PetService petService){
+
         this.petService = petService;
     }
 
@@ -28,22 +28,29 @@ public class PetController {
     }
 
     @GetMapping("/pets")
-    public ResponseEntity<List<PetDto>> getAllPets(@RequestParam(value = "name", required = false) Optional<String> name) {
+    public ResponseEntity<List<PetDto>> getAllPets() {
 
         List<PetDto> dtos;
 
-        if (name.isEmpty()) {
-            dtos = petService.getAllPets();
-        } else {
-            dtos = petService.getAllPetsByName(name.get());
-        }
+        dtos = petService.getAllPets();
         return ResponseEntity.ok().body(dtos);
     }
 
 
-@GetMapping("/pets/{username}")
-    public ResponseEntity<List<PetDto>> getPetsByUsername(@PathVariable("username") String username) {
-        List<PetDto> dtos = petService.getAllPetsByUsername(username);
+
+    @PutMapping("/pets/{petId}")
+    public ResponseEntity<PetDto> updatePet(@PathVariable Long petId, @RequestBody PetDto petDto, Principal principal) {
+
+        String username = principal.getName();
+
+        PetDto updatedPetDto = petService.updatePet(petId, petDto, username);
+
+        return ResponseEntity.ok().body(updatedPetDto);
+    }
+
+@GetMapping("/pets/user")
+    public ResponseEntity<List<PetDto>> getPetsByUsername(Principal principal) {
+        List<PetDto> dtos = petService.getAllPetsByUsername(principal.getName());
         return ResponseEntity.ok().body(dtos);
     }
 
