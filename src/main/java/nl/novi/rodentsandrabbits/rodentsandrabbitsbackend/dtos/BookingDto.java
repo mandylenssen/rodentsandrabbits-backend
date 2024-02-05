@@ -1,32 +1,21 @@
-package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
-
-import jakarta.persistence.*;
+package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos;
 
 import java.util.Date;
-import java.util.Set;
 
-@Entity
-@Table(name = "reservations")
-public class Reservation {
-    @Id
-    @GeneratedValue
+public class BookingDto {
+
     private Long id;
-
     private Date startDate;
     private Date endDate;
 
-    @ManyToMany()
-    private Set<Pet> pets;
 
-
-
-    public Reservation(Long id, Date startDate, Date endDate) {
+    public BookingDto(Long id, Date startDate, Date endDate) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public Reservation() {
+    public BookingDto() {
 
     }
 

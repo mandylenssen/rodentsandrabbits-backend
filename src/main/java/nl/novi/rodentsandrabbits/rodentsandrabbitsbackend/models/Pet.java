@@ -34,7 +34,7 @@ public class Pet {
     private ImageData imageData;
 
     @ManyToMany()
-    private Set<Reservation> reservations;
+    private Set<Booking> bookings;
 
     @OneToMany(mappedBy = "pet")
     @JsonIgnore
@@ -128,12 +128,12 @@ public class Pet {
         this.owner = owner;
     }
 
-    public Set<Reservation> getReservations() {
-        return reservations;
+    public Set<Booking> getBookings() {
+        return bookings;
     }
 
-    public void setReservations(Set<Reservation> reservations) {
-        this.reservations = reservations;
+    public void setBookings(Set<Booking> bookings) {
+        this.bookings = bookings;
     }
 
     public List<DiaryLog> getDiaryLogs() {

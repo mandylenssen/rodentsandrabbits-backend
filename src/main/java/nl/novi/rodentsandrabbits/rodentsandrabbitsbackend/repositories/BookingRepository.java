@@ -1,0 +1,7 @@
+package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories;
+
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Booking;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BookingRepository extends JpaRepository<Booking, Long> {
+}
