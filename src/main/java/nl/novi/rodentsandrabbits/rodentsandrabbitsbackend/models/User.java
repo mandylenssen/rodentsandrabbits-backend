@@ -1,9 +1,11 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
 
 import jakarta.persistence.*;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,15 +34,21 @@ public class User {
     private Set<Authority> authorities = new HashSet<>();
 
 
-
     @Column(nullable = false)
     private boolean enabled = true;
 
     @Column
     private String apikey;
 
+    @OneToOne(mappedBy = "user")
+    private ImageData imageData;
+
+
     @Column
     private String email;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Pet> pets;
 
 
     public String getUsername() {
@@ -118,7 +126,26 @@ public class User {
     public void addAuthority(Authority authority) {
         this.authorities.add(authority);
     }
+
     public void removeAuthority(Authority authority) {
         this.authorities.remove(authority);
-}
+    }
+
+
+    public List<Pet> getPets() {
+        return pets;
+    }
+
+    public void setPets(List<Pet> pets) {
+        this.pets = pets;
+    }
+
+//    public void setImage(ImageData imgData) {
+//        this.imageData = imgData;
+//
+//    }
+//
+//    public ImageData getImageData() {
+//        return imageData;
+//    }
 }

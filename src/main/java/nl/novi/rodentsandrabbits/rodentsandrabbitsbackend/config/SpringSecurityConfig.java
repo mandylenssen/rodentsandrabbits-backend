@@ -48,16 +48,21 @@ public class SpringSecurityConfig {
               .cors(Customizer.withDefaults())
               .authorizeHttpRequests(auth ->
                               auth
-                                      // Wanneer je deze uncomments, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
-                .requestMatchers("/**").permitAll()
-                                        .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
-                                        .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
-                                        .requestMatchers(HttpMethod.GET,"/users/**").hasRole("ADMIN")
 
-                                      // Je mag meerdere paths tegelijk definieren
-                                      .requestMatchers("/pets", "/reservations", "/diary", "/diarylogs").hasAnyRole("ADMIN", "USER")
+//                .requestMatchers("/**").permitAll()
+
+                                        .requestMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN")
+                                        .requestMatchers(HttpMethod.GET,"/users/**").hasRole("ADMIN")
+                                      .requestMatchers(HttpMethod.POST, "/pets/**").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/pets/**").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.PUT, "/pets/**").hasAnyRole("ADMIN", "USER")
+
+                                      .requestMatchers( "/reservations", "/diary", "/diarylogs").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers("/authenticated").authenticated()
                                       .requestMatchers("/authenticate").permitAll()
+                                      .requestMatchers(HttpMethod.POST,"/image").permitAll()
+                                      .requestMatchers(HttpMethod.GET,"/image/{username}/{petId}").permitAll()
+                                      .requestMatchers(HttpMethod.POST, "/users").permitAll()
                                       .anyRequest().denyAll()
               )
               .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

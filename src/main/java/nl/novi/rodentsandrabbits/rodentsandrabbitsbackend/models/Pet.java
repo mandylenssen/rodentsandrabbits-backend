@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 
 @Entity
 @Table(name = "pets")
@@ -23,11 +25,25 @@ public class Pet {
     private String medication;
     private String diet;
 
+    @ManyToOne
+    @JoinColumn(name = "owner")
+    private User owner;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_data_id", referencedColumnName = "id")
+    private ImageData imageData;
+
+    @ManyToMany()
+    private Set<Reservation> reservations;
+
+    @OneToMany(mappedBy = "pet")
+    @JsonIgnore
+    List<DiaryLog> diaryLogs;
 
     public Pet() {
     }
 
-    public Pet(Long id, String name, Date birthday, String species, String gender, String details, String medication, String diet) {
+    public Pet(Long id, String name, Date birthday, String species, String gender, String details, String medication, String diet, User owner) {
         this.id = id;
         this.name = name;
         this.birthday = birthday;
@@ -36,12 +52,8 @@ public class Pet {
         this.details = details;
         this.medication = medication;
         this.diet = diet;
+        this.owner = owner;
     }
-
-    @OneToMany(mappedBy = "pet")
-    @JsonIgnore
-    List<DiaryLog> diaryLogs;
-
 
 
     public Long getId() {
@@ -106,5 +118,37 @@ public class Pet {
 
     public void setDiet(String diet) {
         this.diet = diet;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public Set<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(Set<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    public List<DiaryLog> getDiaryLogs() {
+        return diaryLogs;
+    }
+
+    public void setDiaryLogs(List<DiaryLog> diaryLogs) {
+        this.diaryLogs = diaryLogs;
+    }
+
+    public ImageData getImageData() {
+        return this.imageData;
+    }
+
+    public void setImageData(ImageData imageData) {
+        this.imageData = imageData;
     }
 }
