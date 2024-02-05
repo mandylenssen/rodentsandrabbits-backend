@@ -33,7 +33,13 @@ public class Pet {
     @JoinColumn(name = "image_data_id", referencedColumnName = "id")
     private ImageData imageData;
 
-    @ManyToMany()
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    // Als een Pet entiteit wordt opgeslagen (gepersisteerd) in de database, worden ook alle gerelateerde Booking entiteiten die nog niet in de database bestaan, opgeslagen.
+    // CascadeType.MERGE: Als een Pet entiteit wordt bijgewerkt, worden ook de wijzigingen in alle gerelateerde Booking entiteiten doorgevoerd in de database.
+    @JoinTable(name = "pet_booking",
+            joinColumns = @JoinColumn(name = "pet_id"), // Dit definieert de kolom in de join tabel die verwijst naar de primaire sleutel van de Pet entiteit. Elke rij in de join tabel bevat een pet_id die verwijst naar een Pet.
+            inverseJoinColumns = @JoinColumn(name = "booking_id"))
+    // Dit definieert de kolom in de join tabel die verwijst naar de primaire sleutel van de Booking entiteit.Dit stelt de relatie van de andere kant vast, waarbij elke rij in de join tabel ook een booking_id bevat die verwijst naar een Booking.
     private Set<Booking> bookings;
 
     @OneToMany(mappedBy = "pet")

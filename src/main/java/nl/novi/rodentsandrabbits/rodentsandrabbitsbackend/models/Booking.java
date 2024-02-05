@@ -14,21 +14,22 @@ public class Booking {
 
     private Date startDate;
     private Date endDate;
+    private String additionalInfo;
 
-    @ManyToMany()
+    @ManyToMany(mappedBy = "bookings")
     private Set<Pet> pets;
 
-
-
-    public Booking(Long id, Date startDate, Date endDate) {
+    public Booking(Long id, Date startDate, Date endDate, String additionalInfo) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.additionalInfo = additionalInfo;
     }
 
     public Booking() {
 
     }
+
 
     public Long getId() {
         return id;
@@ -52,5 +53,13 @@ public class Booking {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
     }
 }
