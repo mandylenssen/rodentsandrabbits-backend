@@ -17,8 +17,11 @@ public class ImageData {
     private byte[] imageData;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_username", referencedColumnName = "username")
     private User user;
+
+    @OneToOne(mappedBy = "imageData")
+    private Pet pet;
 
     public ImageData() {
     }
@@ -61,4 +64,15 @@ public class ImageData {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public Pet getPet() {
+        return pet;
+    }
+
+    public void setPet(Pet pet) {
+        this.pet = pet;
+    }
+
+
+
 }

@@ -60,6 +60,8 @@ public class SpringSecurityConfig {
                                       .requestMatchers( "/reservations", "/diary", "/diarylogs").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers("/authenticated").authenticated()
                                       .requestMatchers("/authenticate").permitAll()
+                                      .requestMatchers(HttpMethod.POST,"/image").permitAll()
+                                      .requestMatchers(HttpMethod.GET,"/image/{username}/{petId}").permitAll()
                                       .requestMatchers(HttpMethod.POST, "/users").permitAll()
                                       .anyRequest().denyAll()
               )

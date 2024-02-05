@@ -29,6 +29,9 @@ public class Pet {
     @JoinColumn(name = "owner")
     private User owner;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_data_id", referencedColumnName = "id")
+    private ImageData imageData;
 
     @ManyToMany()
     private Set<Reservation> reservations;
@@ -51,9 +54,6 @@ public class Pet {
         this.diet = diet;
         this.owner = owner;
     }
-
-
-
 
 
     public Long getId() {
@@ -144,4 +144,11 @@ public class Pet {
         this.diaryLogs = diaryLogs;
     }
 
+    public ImageData getImageData() {
+        return this.imageData;
+    }
+
+    public void setImageData(ImageData imageData) {
+        this.imageData = imageData;
+    }
 }

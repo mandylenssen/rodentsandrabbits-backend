@@ -140,12 +140,12 @@ public class User {
         this.pets = pets;
     }
 
-    public void setImage(ImageData imgData) {
-        this.imageData = imgData;
-
-    }
-
-    public ImageData getImageData() {
-        return imageData;
-    }
+//    public void setImage(ImageData imgData) {
+//        this.imageData = imgData;
+//
+//    }
+//
+//    public ImageData getImageData() {
+//        return imageData;
+//    }
 }
