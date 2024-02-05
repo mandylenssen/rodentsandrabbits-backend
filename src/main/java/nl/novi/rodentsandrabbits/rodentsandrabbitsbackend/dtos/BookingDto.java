@@ -1,23 +1,26 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos;
 
 import java.util.Date;
+import java.util.List;
 
 public class BookingDto {
 
     private Long id;
     private Date startDate;
     private Date endDate;
+    private String additionalInfo;
 
+    private List<Long> petIds;
 
-    public BookingDto(Long id, Date startDate, Date endDate) {
+    public BookingDto(Long id, Date startDate, Date endDate, String additionalInfo, List<Long> petIds) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.additionalInfo = additionalInfo;
+        this.petIds = petIds;
     }
 
-    public BookingDto() {
 
-    }
 
     public Long getId() {
         return id;
@@ -42,4 +45,21 @@ public class BookingDto {
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
+
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
+
+    public List<Long> getPetIds() {
+        return petIds;
+    }
+
+    public void setPetIds(List<Long> petIds) {
+        this.petIds = petIds;
+    }
 }
+

@@ -56,13 +56,15 @@ public class SpringSecurityConfig {
                                       .requestMatchers(HttpMethod.POST, "/pets/**").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET, "/pets/**").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.PUT, "/pets/**").hasAnyRole("ADMIN", "USER")
-
-                                      .requestMatchers( "/bookings", "/diary", "/diarylogs").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.POST, "/bookings").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/bookings").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers( "/diary", "/diarylogs").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers("/authenticated").authenticated()
                                       .requestMatchers("/authenticate").permitAll()
                                       .requestMatchers(HttpMethod.POST,"/image").permitAll()
                                       .requestMatchers(HttpMethod.GET,"/image/{username}/{petId}").permitAll()
                                       .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                                      .requestMatchers(HttpMethod.GET, "/bookings/availability").permitAll()
                                       .anyRequest().denyAll()
               )
               .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

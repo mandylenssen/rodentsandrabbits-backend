@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping(value = "/pets")
 public class PetController {
 
     private final PetService petService;
@@ -20,14 +21,14 @@ public class PetController {
     }
 
 
-    @PostMapping("/pets")
+    @PostMapping
     public ResponseEntity<Object> addPet(@Valid @RequestBody PetDto petDto) {
         PetDto createdPetDto = petService.addPet(petDto);
         return ResponseEntity.created(null).body(createdPetDto);
 
     }
 
-    @GetMapping("/pets")
+    @GetMapping
     public ResponseEntity<List<PetDto>> getAllPets() {
 
         List<PetDto> dtos;
@@ -38,7 +39,7 @@ public class PetController {
 
 
 
-    @PutMapping("/pets/{petId}")
+    @PutMapping("/{petId}")
     public ResponseEntity<PetDto> updatePet(@PathVariable Long petId, @RequestBody PetDto petDto, Principal principal) {
 
         String username = principal.getName();
@@ -48,7 +49,7 @@ public class PetController {
         return ResponseEntity.ok().body(updatedPetDto);
     }
 
-@GetMapping("/pets/user")
+@GetMapping("/user")
     public ResponseEntity<List<PetDto>> getPetsByUsername(Principal principal) {
         List<PetDto> dtos = petService.getAllPetsByUsername(principal.getName());
         return ResponseEntity.ok().body(dtos);

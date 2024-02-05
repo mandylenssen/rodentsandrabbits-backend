@@ -21,7 +21,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(value = "")
+    @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto dto) {
         String newUsername = userService.createUser(dto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
@@ -40,7 +40,7 @@ public class UserController {
     }
 
 
-    @GetMapping(value = "")
+    @GetMapping
     public ResponseEntity<String> getUsers() {
 
 

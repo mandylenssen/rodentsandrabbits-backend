@@ -2,7 +2,9 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
 
 import jakarta.persistence.*;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,13 +19,14 @@ public class Booking {
     private String additionalInfo;
 
     @ManyToMany(mappedBy = "bookings")
-    private Set<Pet> pets;
+    private List<Pet> pets;
 
-    public Booking(Long id, Date startDate, Date endDate, String additionalInfo) {
+    public Booking(Long id, Date startDate, Date endDate, String additionalInfo, List<Pet> pets) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.additionalInfo = additionalInfo;
+        this.pets = pets;
     }
 
     public Booking() {
@@ -61,5 +64,13 @@ public class Booking {
 
     public void setAdditionalInfo(String additionalInfo) {
         this.additionalInfo = additionalInfo;
+    }
+
+    public List<Pet> getPets() {
+        return pets;
+    }
+
+    public void setPets(List<Pet> pets) {
+        this.pets = pets;
     }
 }
