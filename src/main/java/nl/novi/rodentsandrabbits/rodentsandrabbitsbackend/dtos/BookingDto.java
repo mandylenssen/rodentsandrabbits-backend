@@ -7,6 +7,7 @@ public class BookingDto {
 
     private Long id;
     private Date startDate;
+
     private Date endDate;
     private String additionalInfo;
 

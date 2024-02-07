@@ -2,10 +2,7 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
 
 import jakarta.persistence.*;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "bookings")
@@ -18,15 +15,15 @@ public class Booking {
     private Date endDate;
     private String additionalInfo;
 
-    @ManyToMany(mappedBy = "bookings")
-    private List<Pet> pets;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Pet> pets = new ArrayList<>();
 
     public Booking(Long id, Date startDate, Date endDate, String additionalInfo, List<Pet> pets) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.additionalInfo = additionalInfo;
-        this.pets = pets;
+        this.getPets().addAll(pets);
     }
 
     public Booking() {
