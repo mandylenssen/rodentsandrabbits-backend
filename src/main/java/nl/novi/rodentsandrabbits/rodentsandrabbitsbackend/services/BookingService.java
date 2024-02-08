@@ -10,9 +10,7 @@ import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.PetReposi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,7 +18,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
 
     @Autowired
-    private PetRepository petRepository; // Ensure you have this injected into your service
+    private PetRepository petRepository;
 
     @Autowired
     public BookingService(BookingRepository bookingRepository) {
@@ -36,10 +34,18 @@ public class BookingService {
 
 
 
-    public boolean isDateAvailable(Date startDate, Date endDate) {
-        List<Booking> overlappingBookings = bookingRepository.findOverlappingBookings(startDate, endDate);
-        return overlappingBookings.isEmpty();
+public boolean isDateAvailable(Date startDate, Date endDate) {
+    List<Date> datesToCheck = getDatesBetween(startDate, endDate);
+    List<Date> unavailableDates = getUnavailableDates();
+
+    for (Date date : datesToCheck) {
+        if (unavailableDates.contains(date)) {
+            return false;
+        }
     }
+
+    return true;
+}
 
     public List<BookingDto> getAllBookings() {
         List<Booking> bookings = bookingRepository.findAll();
@@ -92,4 +98,42 @@ public class BookingService {
                 booking.getPets().stream().map(Pet::getId).toList()
         );
     }
+
+
+
+    public List<Date> getUnavailableDates() {
+        List<Booking> bookings = bookingRepository.findAll();
+        Map<Date, Integer> bookingCounts = new HashMap<>();
+
+        // Populate bookingCounts with the number of bookings for each date
+        for (Booking booking : bookings) {
+            List<Date> dates = getDatesBetween(booking.getStartDate(), booking.getEndDate());
+            for (Date date : dates) {
+                bookingCounts.put(date, bookingCounts.getOrDefault(date, 0) + 1);
+            }
+        }
+
+        List<Date> unavailableDates = new ArrayList<>();
+        for (Map.Entry<Date, Integer> entry : bookingCounts.entrySet()) {
+            if (entry.getValue() >= 2) {
+                unavailableDates.add(entry.getKey());
+            }
+        }
+
+        return unavailableDates.stream().distinct().collect(Collectors.toList());
+    }
+
+    private List<Date> getDatesBetween(Date startDate, Date endDate) {
+        List<Date> dates = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+
+        while (calendar.getTime().before(endDate) || calendar.getTime().equals(endDate)) {
+            dates.add(calendar.getTime());
+            calendar.add(Calendar.DATE, 1);
+        }
+
+        return dates;
+    }
+
 }

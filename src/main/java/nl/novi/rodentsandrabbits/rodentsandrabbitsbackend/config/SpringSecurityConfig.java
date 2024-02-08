@@ -51,8 +51,8 @@ public class SpringSecurityConfig {
 
 //                .requestMatchers("/**").permitAll()
 
-                                        .requestMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN")
-                                        .requestMatchers(HttpMethod.GET,"/users/**").hasRole("ADMIN")
+                                      .requestMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN")
+                                      .requestMatchers(HttpMethod.GET,"/users/**").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.POST, "/pets/**").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET, "/pets/**").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.PUT, "/pets/**").hasAnyRole("ADMIN", "USER")
@@ -65,6 +65,7 @@ public class SpringSecurityConfig {
                                       .requestMatchers(HttpMethod.GET,"/image/{username}/{petId}").permitAll()
                                       .requestMatchers(HttpMethod.POST, "/users").permitAll()
                                       .requestMatchers(HttpMethod.GET, "/bookings/availability").permitAll()
+                                      .requestMatchers(HttpMethod.GET, "/bookings/unavailable-dates").permitAll()
                                       .anyRequest().denyAll()
               )
               .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

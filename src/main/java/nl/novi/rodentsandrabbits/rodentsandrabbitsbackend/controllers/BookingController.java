@@ -39,6 +39,11 @@ public class BookingController {
         return ResponseEntity.ok(available);
     }
 
+   @GetMapping("/unavailable-dates")
+    public ResponseEntity<List<Date>> getUnavailableDates() {
+        List<Date> unavailableDates = bookingService.getUnavailableDates();
+        return ResponseEntity.ok().body(unavailableDates);
+    }
 
     @GetMapping
     public ResponseEntity<List<BookingDto>> getBookings() {
