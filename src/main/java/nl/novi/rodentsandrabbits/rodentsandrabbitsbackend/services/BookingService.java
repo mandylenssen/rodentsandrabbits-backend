@@ -25,7 +25,6 @@ public class BookingService {
         this.bookingRepository = bookingRepository;
     }
 
-    //@Transactional
     public long createBooking(BookingDto bookingDto) {
         Booking booking = transferToBooking(bookingDto);
         bookingRepository.save(booking);
@@ -105,7 +104,7 @@ public boolean isDateAvailable(Date startDate, Date endDate) {
         List<Booking> bookings = bookingRepository.findAll();
         Map<Date, Integer> bookingCounts = new HashMap<>();
 
-        // Populate bookingCounts with the number of bookings for each date
+
         for (Booking booking : bookings) {
             List<Date> dates = getDatesBetween(booking.getStartDate(), booking.getEndDate());
             for (Date date : dates) {

@@ -15,7 +15,7 @@ import java.util.Set;
 public class Pet {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     private String name;
@@ -33,15 +33,6 @@ public class Pet {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_data_id", referencedColumnName = "id")
     private ImageData imageData;
-
-
-//    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(name = "pet_booking",
-//            joinColumns = @JoinColumn(name = "pet_id", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "booking_id", referencedColumnName = "id")
-//    )
-//    private Set<Booking> bookings = new HashSet<>();
-
 
     @ManyToMany(mappedBy = "pets")
     private Set<Booking> bookings = new HashSet<>();
