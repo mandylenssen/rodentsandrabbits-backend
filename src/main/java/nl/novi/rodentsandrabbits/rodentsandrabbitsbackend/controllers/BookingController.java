@@ -64,4 +64,6 @@ public class BookingController {
         List<BookingDto> bookings = bookingService.getAllBookings();
         return ResponseEntity.ok().body(bookings);
     }
+
+
 }

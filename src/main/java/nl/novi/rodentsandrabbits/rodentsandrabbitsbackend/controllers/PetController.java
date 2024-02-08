@@ -3,6 +3,7 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.controllers;
 import jakarta.validation.Valid;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.PetDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services.PetService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +16,9 @@ import java.util.Optional;
 public class PetController {
 
     private final PetService petService;
-    public PetController(PetService petService){
 
+    @Autowired
+    public PetController(PetService petService){
         this.petService = petService;
     }
 
@@ -37,17 +39,22 @@ public class PetController {
         return ResponseEntity.ok().body(dtos);
     }
 
+    @GetMapping("/{petId}")
+    public ResponseEntity<PetDto> GetPet(@PathVariable Long petId) {
+
+        PetDto pet = petService.getPetById(petId);
+        return ResponseEntity.ok().body(pet);
+    }
+
 
 
     @PutMapping("/{petId}")
     public ResponseEntity<PetDto> updatePet(@PathVariable Long petId, @RequestBody PetDto petDto, Principal principal) {
-
         String username = principal.getName();
-
         PetDto updatedPetDto = petService.updatePet(petId, petDto, username);
-
         return ResponseEntity.ok().body(updatedPetDto);
     }
+
 
 @GetMapping("/user")
     public ResponseEntity<List<PetDto>> getPetsByUsername(Principal principal) {
@@ -56,4 +63,7 @@ public class PetController {
     }
 
 
+
+
 }
+

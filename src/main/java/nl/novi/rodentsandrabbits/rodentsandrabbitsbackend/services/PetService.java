@@ -72,6 +72,11 @@ return transferPetListToDtoList(pets);
         return petDtoList;
     }
 
+    public PetDto getPetById(long id) {
+        Pet pet = petRepository.findById(id).orElseThrow();
+
+        return transferToDto(pet);
+    }
 
 //
 //    public void deletePet(long id) {
@@ -117,9 +122,6 @@ return transferPetListToDtoList(pets);
         return dto;
     }
 
-//    public List<PetDto> getAllPetsByName(String s) {
-//        return null;
-//    }
 
     public List<PetDto> getAllPetsByName(String name) {
         List<Pet> pets = petRepository.findAllPetsByName(name);
