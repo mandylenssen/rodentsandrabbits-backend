@@ -7,17 +7,17 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "diaries")
-public class Diary {
+public class Logbook {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    public Diary() {
+    public Logbook() {
 
     }
 
-    public Diary(Long id) {
+    public Logbook(Long id) {
         this.id = id;
     }
 

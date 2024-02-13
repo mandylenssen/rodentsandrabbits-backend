@@ -40,9 +40,6 @@ public class User {
     @Column
     private String apikey;
 
-    @OneToOne(mappedBy = "user")
-    private ImageData imageData;
-
 
     @Column
     private String email;

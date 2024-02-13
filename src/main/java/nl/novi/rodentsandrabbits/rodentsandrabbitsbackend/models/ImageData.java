@@ -1,6 +1,12 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
 
 import jakarta.persistence.*;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "image_data")
@@ -13,18 +19,32 @@ public class ImageData {
     private String name;
     private String type;
 
-    @Lob
+//    @Lob
     private byte[] imageData;
 
     @OneToOne
-    @JoinColumn(name = "user_username", referencedColumnName = "username")
-    private User user;
-
-    @OneToOne(mappedBy = "imageData")
+    @JoinColumn(name = "pet_id", referencedColumnName = "id")
     private Pet pet;
+
+
+//    @ManyToOne(mappedBy = "imageData")
+//    private LogbookLog logbookLog;
 
     public ImageData() {
     }
+
+    public ImageData(MultipartFile multipartFile) throws IOException {
+        this.setName(multipartFile.getName());
+        this.setType(multipartFile.getContentType());
+        this.setImageData(ImageUtil.compressImage(multipartFile.getBytes()));
+    }
+
+    public void UpdateImageData(MultipartFile multipartFile) throws IOException {
+        this.setName(multipartFile.getName());
+        this.setType(multipartFile.getContentType());
+        this.setImageData(ImageUtil.compressImage(multipartFile.getBytes()));
+    }
+
     public Long getId() {
         return id;
     }
@@ -57,13 +77,6 @@ public class ImageData {
         this.imageData = imageData;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public Pet getPet() {
         return pet;

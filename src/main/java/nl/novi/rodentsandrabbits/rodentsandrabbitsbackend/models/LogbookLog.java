@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "diary_logs")
-public class DiaryLog {
+public class LogbookLog {
 
     @Id
     @GeneratedValue
@@ -15,7 +15,7 @@ public class DiaryLog {
     private Date date;
     private String name;
 
-    public DiaryLog(Long id, Date date, String name, Pet pet) {
+    public LogbookLog(Long id, Date date, String name, Pet pet) {
         this.id = id;
         this.date = date;
         this.name = name;
@@ -26,11 +26,15 @@ public class DiaryLog {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
+//    @OneToMany(mappedBy = "logbookLog")
+//    private ImageData imageData;
 
 
 
 
-    public DiaryLog() {
+
+
+    public LogbookLog() {
 
     }
 

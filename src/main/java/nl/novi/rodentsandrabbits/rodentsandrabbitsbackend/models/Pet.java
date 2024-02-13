@@ -30,16 +30,18 @@ public class Pet {
     @JoinColumn(name = "owner")
     private User owner;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "image_data_id", referencedColumnName = "id")
-    private ImageData imageData;
+    @OneToOne(mappedBy = "pet", cascade = CascadeType.ALL)
+    private ImageData profileImageData;
+
 
     @ManyToMany(mappedBy = "pets")
     private Set<Booking> bookings = new HashSet<>();
 
     @OneToMany(mappedBy = "pet")
     @JsonIgnore
-    List<DiaryLog> diaryLogs;
+    List<LogbookLog> diaryLogs;
+
+
 
     public Pet() {
     }
@@ -137,20 +139,20 @@ public class Pet {
         this.bookings = bookings;
     }
 
-    public List<DiaryLog> getDiaryLogs() {
+    public List<LogbookLog> getDiaryLogs() {
         return diaryLogs;
     }
 
 
-    public void setDiaryLogs(List<DiaryLog> diaryLogs) {
+    public void setDiaryLogs(List<LogbookLog> diaryLogs) {
         this.diaryLogs = diaryLogs;
     }
 
-    public ImageData getImageData() {
-        return this.imageData;
+    public ImageData getProfileImageData() {
+        return this.profileImageData;
     }
 
-    public void setImageData(ImageData imageData) {
-        this.imageData = imageData;
+    public void setProfileImageData(ImageData imageData) {
+        this.profileImageData = imageData;
     }
 }

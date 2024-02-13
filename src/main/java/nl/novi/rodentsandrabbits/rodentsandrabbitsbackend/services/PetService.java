@@ -1,17 +1,19 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services;
 
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.PetDto;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.ImageData;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.User;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.PetRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.UserRepository;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class PetService {
@@ -118,7 +120,6 @@ return transferPetListToDtoList(pets);
         dto.setMedication(pet.getMedication());
         dto.setDiet(pet.getDiet());
         dto.setOwnerUsername(pet.getOwner().getUsername());
-
         return dto;
     }
 
@@ -140,6 +141,44 @@ return transferPetListToDtoList(pets);
         }
         petRepository.deleteById(petId);
     }
+
+    public void addProfileImage(Long petId, MultipartFile multipartFile) throws IOException {
+        Pet pet = petRepository.findById(petId).orElseThrow();
+
+        ImageData imageData = new ImageData(multipartFile);
+        imageData.setPet(pet);
+        imageData.setName(multipartFile.getName());
+
+        pet.setProfileImageData(imageData);
+        petRepository.save(pet);
+    }
+
+    public ImageData getProfileImage(Long petId) {
+        Optional<Pet> petOptional = petRepository.findById(petId);
+        if (!petOptional.isPresent()) {
+            throw new IllegalStateException("Pet not found with id: " + petId);
+        }
+
+        Pet pet = petOptional.get();
+        return pet.getProfileImageData();
+    }
+
+    public void updateProfileImage(Long petId, MultipartFile multipartFile) throws IOException {
+        Pet pet = petRepository.findById(petId).orElseThrow();
+
+        ImageData imageData = pet.getProfileImageData();
+
+        if (imageData == null) {
+            imageData = new ImageData();
+            imageData.setPet(pet); // Zorg ervoor dat de relatie is ingesteld
+        }
+
+        imageData.UpdateImageData(multipartFile);
+
+        pet.setProfileImageData(imageData);
+        petRepository.save(pet);
+    }
+
 }
 
 

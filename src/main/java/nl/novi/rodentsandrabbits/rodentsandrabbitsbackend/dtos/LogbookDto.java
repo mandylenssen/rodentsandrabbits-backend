@@ -1,13 +1,13 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos;
 
-public class DiaryDto {
+public class LogbookDto {
 
     public Long id;
 
-    public DiaryDto() {
+    public LogbookDto() {
     }
 
-    public DiaryDto(Long id) {
+    public LogbookDto(Long id) {
         this.id = id;
     }
 

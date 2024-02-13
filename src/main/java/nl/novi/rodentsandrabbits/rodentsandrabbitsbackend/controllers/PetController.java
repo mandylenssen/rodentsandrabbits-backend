@@ -2,14 +2,24 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.controllers;
 
 import jakarta.validation.Valid;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.PetDto;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.ImageData;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.User;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services.PetService;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.URI;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping(value = "/pets")
@@ -18,7 +28,7 @@ public class PetController {
     private final PetService petService;
 
     @Autowired
-    public PetController(PetService petService){
+    public PetController(PetService petService) {
         this.petService = petService;
     }
 
@@ -41,11 +51,14 @@ public class PetController {
 
     @GetMapping("/{petId}")
     public ResponseEntity<PetDto> GetPet(@PathVariable Long petId) {
-
         PetDto pet = petService.getPetById(petId);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().replacePath("/pets/{petId}/profileImage")
+                .build().toUri();
+
+        pet.setProfileImageLocation(location.toString());
         return ResponseEntity.ok().body(pet);
     }
-
 
 
     @PutMapping("/{petId}")
@@ -56,7 +69,7 @@ public class PetController {
     }
 
 
-@GetMapping("/user")
+    @GetMapping("/user")
     public ResponseEntity<List<PetDto>> getPetsByUsername(Principal principal) {
         List<PetDto> dtos = petService.getAllPetsByUsername(principal.getName());
         return ResponseEntity.ok().body(dtos);
@@ -69,6 +82,33 @@ public class PetController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{petId}/profileImage")
+    public ResponseEntity<String> uploadProfileImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long petId) throws IOException {
+        petService.addProfileImage(petId, multipartFile);
+        return ResponseEntity.ok().body("The profile picture file has been uploaded");
+    }
+
+    @GetMapping("/{petId}/profileImage")
+    public ResponseEntity<Object> downloadProfileImage(@PathVariable Long petId) throws IOException {
+        ImageData imageData = petService.getProfileImage(petId);
+        if (imageData == null) {
+            return ResponseEntity.notFound().build();
+        }
+        byte[] image = ImageUtil.decompressImage(imageData.getImageData());
+        MediaType mediaType = MediaType.valueOf(imageData.getType());
+
+        return ResponseEntity.ok().contentType(mediaType).body(image);
+    }
+
+
+    @PutMapping("/{petId}/profileImage")
+    public ResponseEntity<String> updateProfileImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long petId) throws IOException {
+        petService.updateProfileImage(petId, multipartFile);
+        return ResponseEntity.ok().body("The profile picture file has been updated");
+    }
 
 }
+
+
+
 
