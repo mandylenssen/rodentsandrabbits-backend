@@ -170,7 +170,7 @@ return transferPetListToDtoList(pets);
 
         if (imageData == null) {
             imageData = new ImageData();
-            imageData.setPet(pet); // Zorg ervoor dat de relatie is ingesteld
+            imageData.setPet(pet);
         }
 
         imageData.UpdateImageData(multipartFile);
