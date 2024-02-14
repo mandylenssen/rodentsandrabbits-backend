@@ -3,8 +3,6 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.controllers;
 import jakarta.validation.Valid;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.PetDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.ImageData;
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.User;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services.PetService;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
