@@ -1,7 +1,5 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos;
 
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.User;
-
 import java.util.Date;
 
 public class PetDto {
@@ -15,6 +13,7 @@ public class PetDto {
     private String medication;
     private String diet;
     private String ownerUsername;
+    private String profileImageLocation;
 
 
 public PetDto() {}
@@ -102,5 +101,13 @@ public PetDto() {}
 
     public void setOwnerUsername(String ownerUsername) {
         this.ownerUsername = ownerUsername;
+    }
+
+    public String getProfileImageLocation() {
+        return profileImageLocation;
+    }
+
+    public void setProfileImageLocation(String profileImageLocation) {
+        this.profileImageLocation = profileImageLocation;
     }
 }

@@ -4,21 +4,21 @@ import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 
 import java.util.Date;
 
-public class DiaryLogDto {
+public class LogbookLogDto {
 
     private Long id;
     private Date date;
     private String name;
     private Pet pet;
 
-    public DiaryLogDto(Long id, Date date, String name, Pet pet) {
+    public LogbookLogDto(Long id, Date date, String name, Pet pet) {
         this.id = id;
         this.date = date;
         this.name = name;
         this.pet = pet;
     }
 
-    public DiaryLogDto() {
+    public LogbookLogDto() {
 
     }
 
