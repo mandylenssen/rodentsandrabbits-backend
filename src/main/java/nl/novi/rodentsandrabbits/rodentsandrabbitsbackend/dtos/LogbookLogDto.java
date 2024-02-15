@@ -10,13 +10,13 @@ public class LogbookLogDto {
     private Long id;
     private Date date;
     private String entry;
-    private List<PetDto> pets;
+    private List<Long> petsIds;
 
-    public LogbookLogDto(Long id, Date date, String entry, List<PetDto> pets) {
+    public LogbookLogDto(Long id, Date date, String entry, List<Long> petsIds) {
         this.id = id;
         this.date = date;
         this.entry = entry;
-        this.pets = pets;
+        this.petsIds = petsIds;
     }
 
     public LogbookLogDto() {
@@ -47,11 +47,11 @@ public class LogbookLogDto {
         this.entry = entry;
     }
 
-    public List<PetDto> getPets() {
-        return pets;
+    public List<Long> getPetsIds() {
+        return petsIds;
     }
 
-    public void setPets(List<PetDto> pets) {
-        this.pets = pets;
+    public void setPetsIds(List<Long> pets) {
+        this.petsIds = pets;
     }
 }

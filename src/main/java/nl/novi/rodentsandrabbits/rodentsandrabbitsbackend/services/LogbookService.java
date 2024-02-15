@@ -26,6 +26,18 @@ public class LogbookService {
         return convertToDto(logbook);
     }
 
+    public LogbookDto getLogbookDtoById(Long id) {
+        Logbook logbook = logbookRepository.findById(id)
+                .orElseThrow(() -> new LogbookNotFoundException("Logbook not found for id: " + id));
+        return convertToDto(logbook);
+    }
+
+    public Logbook getLogbookById(Long id) {
+        Logbook logbook = logbookRepository.findById(id)
+                .orElseThrow(() -> new LogbookNotFoundException("Logbook not found for id: " + id));
+        return logbook;
+    }
+
     public void createLogbookForUser(String username) {
         Logbook newLogbook = new Logbook();
         newLogbook.setUserName(username);
