@@ -3,21 +3,27 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.LogbookDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.LogbookLogDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.exceptions.LogbookNotFoundException;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.ImageData;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Logbook;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.LogbookLog;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.LogbookRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class LogbookService {
     private final LogbookRepository logbookRepository;
+    private final LogbookLogService logbookLogService;
 
 
-    public LogbookService(LogbookRepository logbookRepository) {
+    public LogbookService(LogbookRepository logbookRepository, LogbookLogService logbookLogService) {
         this.logbookRepository = logbookRepository;
+        this.logbookLogService = logbookLogService;
     }
 
     public LogbookDto getLogbookForUser(String username) {
@@ -57,6 +63,27 @@ public class LogbookService {
         dto.setId(logbookLog.getId());
         dto.setEntry(logbookLog.getEntry());
         return dto;
+    }
+
+    public LogbookLogDto addLogToLogbook(Long logbookId, LogbookLogDto logDto) {
+        // get logbook by id
+        Logbook logbook = getLogbookById(logbookId);
+
+        // create logbook log from logbook log dto
+        LogbookLogDto log = logbookLogService.addLogToLogbook(logbook, logDto);
+
+        // save logbook log??
+
+        // return logbookLogDto
+        return log;
+    }
+
+    public void deleteLogFromLogbook(Long logbookId, Long logId) {
+        logbookLogService.deleteLog(logId);
+    }
+
+    public void addImageToLog(Long logId, MultipartFile multipartFile) throws IOException {
+        logbookLogService.addImageToLog(logId, multipartFile);
     }
 
 }

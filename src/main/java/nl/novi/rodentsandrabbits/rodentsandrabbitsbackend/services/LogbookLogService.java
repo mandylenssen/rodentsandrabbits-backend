@@ -4,13 +4,16 @@ import jakarta.persistence.EntityNotFoundException;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.LogbookDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.LogbookLogDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.PetDto;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.ImageData;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Logbook;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.LogbookLog;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.LogbookLogRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.PetRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,12 +33,7 @@ public class LogbookLogService {
         return logs.stream().map(this::transferToLogbookLogDto).collect(Collectors.toList());
     }
 
-    public LogbookLogDto addLogToLogbook(Long logbookId, LogbookLogDto logDto) {
-        LogbookDto logbook = logbookService.getLogbookDtoById (logbookId);
-        LogbookLog log = transferToLogbookLog(logDto, logbook);
-        log = logbookLogRepository.save(log);
-        return transferToLogbookLogDto(log);
-    }
+
 
     private LogbookLogDto transferToLogbookLogDto(LogbookLog log) {
         LogbookLogDto logDto = new LogbookLogDto();
@@ -48,12 +46,10 @@ public class LogbookLogService {
         return logDto;
     }
 
-    private LogbookLog transferToLogbookLog(LogbookLogDto logDto, LogbookDto logbookDto) {
+    private LogbookLog transferToLogbookLog(LogbookLogDto logDto, Logbook logbook) {
         LogbookLog log = new LogbookLog();
         log.setDate(logDto.getDate());
         log.setEntry(logDto.getEntry());
-
-        Logbook logbook = logbookService.getLogbookById(logbookDto.getId());
 
         log.setLogbook(logbook);
         List<Pet> pets = logDto.getPetsIds().stream()
@@ -63,5 +59,29 @@ public class LogbookLogService {
         log.setPets(pets);
 
         return log;
+    }
+
+    public LogbookLogDto addLogToLogbook(Logbook logbook, LogbookLogDto logDto) {
+        LogbookLog log = transferToLogbookLog(logDto, logbook);
+        logbookLogRepository.save(log);
+        return transferToLogbookLogDto(log);
+    }
+
+    public void deleteLog(Long logId) {
+        logbookLogRepository.deleteById(logId);
+    }
+
+    public void addImageToLog(Long logId, MultipartFile multipartFile) throws IOException {
+        LogbookLog log = logbookLogRepository.findById(logId)
+                .orElseThrow(() -> new EntityNotFoundException("Log not found for id: " + logId));
+
+        List<ImageData> imageDataList = log.getLogbookImageData();
+
+        ImageData imageData = new ImageData(multipartFile);
+        imageData.setLogbookLog(log);
+        imageDataList.add(imageData);
+        log.setLogbookImageData(imageDataList);
+
+        logbookLogRepository.save(log);
     }
 }
