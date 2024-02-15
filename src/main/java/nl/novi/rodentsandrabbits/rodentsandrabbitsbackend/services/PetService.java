@@ -173,7 +173,7 @@ return transferPetListToDtoList(pets);
             imageData.setPet(pet);
         }
 
-        imageData.UpdateImageData(multipartFile);
+        imageData.updateImageData(multipartFile);
 
         pet.setProfileImageData(imageData);
         petRepository.save(pet);

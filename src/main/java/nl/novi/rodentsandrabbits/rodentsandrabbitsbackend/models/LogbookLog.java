@@ -3,40 +3,36 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
+
 
 @Entity
-@Table(name = "diary_logs")
+@Table(name = "logbook_logs")
 public class LogbookLog {
 
     @Id
-    @GeneratedValue
-
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Date date;
-    private String name;
 
-    public LogbookLog(Long id, Date date, String name, Pet pet) {
-        this.id = id;
-        this.date = date;
-        this.name = name;
-        this.pet = pet;
-    }
+    @Column(nullable = false, length = 10000)
+    private String entry;
 
-    @ManyToOne
-    @JoinColumn(name = "pet_id")
-    private Pet pet;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "logbook_log_pets",
+            joinColumns = @JoinColumn(name = "logbook_log_id"),
+            inverseJoinColumns = @JoinColumn(name = "pet_id")
+    )
+    private List<Pet> pets;
 
-//    @OneToMany(mappedBy = "logbookLog")
-//    private ImageData imageData;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "logbook_id", nullable = false)
+    private Logbook logbook;
 
-
-
-
-
-
-    public LogbookLog() {
-
-    }
+    @OneToMany(mappedBy = "logbookLog", cascade = CascadeType.ALL)
+    private List<ImageData> logbookImageData;
 
     public Long getId() {
         return id;
@@ -54,19 +50,35 @@ public class LogbookLog {
         this.date = date;
     }
 
-    public String getName() {
-        return name;
+    public String getEntry() {
+        return entry;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEntry(String entry) {
+        this.entry = entry;
     }
 
-    public Pet getPet() {
-        return pet;
+    public List<Pet> getPets() {
+        return pets;
     }
 
-    public void setPet(Pet pet) {
-        this.pet = pet;
+    public void setPets(List<Pet> pets) {
+        this.pets = pets;
+    }
+
+    public Logbook getLogbook() {
+        return logbook;
+    }
+
+    public void setLogbook(Logbook logbook) {
+        this.logbook = logbook;
+    }
+
+    public List<ImageData> getLogbookImageData() {
+        return logbookImageData;
+    }
+
+    public void setLogbookImageData(List<ImageData> logbookImageData) {
+        this.logbookImageData = logbookImageData;
     }
 }
