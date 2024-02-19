@@ -179,6 +179,10 @@ return transferPetListToDtoList(pets);
         petRepository.save(pet);
     }
 
+    public String getOwner(Long petId) {
+        Pet pet = petRepository.findById(petId).orElseThrow();
+        return pet.getOwner().getUsername();
+    }
 }
 
 

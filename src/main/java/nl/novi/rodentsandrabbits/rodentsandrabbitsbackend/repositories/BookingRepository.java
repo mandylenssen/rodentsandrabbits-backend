@@ -16,4 +16,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 //    long countOverlappingBookings(Date startDate, Date endDate);
 
     List<Booking> findByPetsOwnerUsername(String username);
+
+    List<Booking> findByStartDateBeforeAndEndDateAfter(Date start, Date end);
 }

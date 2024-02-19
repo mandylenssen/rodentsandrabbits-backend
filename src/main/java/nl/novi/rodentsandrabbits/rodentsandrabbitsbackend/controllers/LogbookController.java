@@ -3,7 +3,6 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.controllers;
 
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.LogbookDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.LogbookLogDto;
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services.LogbookLogService;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services.LogbookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +32,12 @@ public class LogbookController {
         LogbookDto logbookDto = logbookService.getLogbookForUser(username);
         return ResponseEntity.ok(logbookDto);
     }
+
+ @GetMapping("user/{username}/id")
+ public ResponseEntity<Long> getLogbookIdForUser(@PathVariable String username) {
+     Long logbookId = logbookService.getLogbookIdForUser(username);
+     return ResponseEntity.ok(logbookId);
+ }
 
     @GetMapping("/{logbookId}")
     public ResponseEntity<LogbookDto> getLogbook(@PathVariable Long logbookId) {

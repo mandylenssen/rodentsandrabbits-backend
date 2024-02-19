@@ -2,6 +2,7 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos;
 
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class LogbookLogDto {
     private Long id;
     private Date date;
     private String entry;
-    private List<Long> petsIds;
+    private List<Long> petsIds = new ArrayList<>();
 
     public LogbookLogDto(Long id, Date date, String entry, List<Long> petsIds) {
         this.id = id;

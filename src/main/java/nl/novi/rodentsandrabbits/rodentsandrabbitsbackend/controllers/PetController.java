@@ -104,6 +104,11 @@ public class PetController {
         return ResponseEntity.ok().body("The profile picture file has been updated");
     }
 
+    @GetMapping("/{petId}/owner")
+    public ResponseEntity<String> getOwner(@PathVariable Long petId) {
+        String owner = petService.getOwner(petId);
+        return ResponseEntity.ok().body(owner);
+    }
 }
 
 

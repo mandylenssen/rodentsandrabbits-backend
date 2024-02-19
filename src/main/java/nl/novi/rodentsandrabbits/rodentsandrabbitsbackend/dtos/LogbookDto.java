@@ -1,5 +1,6 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LogbookDto {
@@ -15,6 +16,7 @@ public class LogbookDto {
         this.userName = userName;
         this.logs = logs;
     }
+
 
     public Long getId() {
         return id;

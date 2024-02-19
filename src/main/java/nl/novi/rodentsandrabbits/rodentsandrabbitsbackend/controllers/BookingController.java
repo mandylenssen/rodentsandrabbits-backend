@@ -65,5 +65,11 @@ public class BookingController {
         return ResponseEntity.ok().body(bookings);
     }
 
+    @GetMapping("/currently-present")
+    public ResponseEntity<List<BookingDto>> getCurrentlyPresentPets() {
+        List<BookingDto> bookings = bookingService.getCurrentlyPresentPets();
+        return ResponseEntity.ok().body(bookings);
+    }
+
 
 }

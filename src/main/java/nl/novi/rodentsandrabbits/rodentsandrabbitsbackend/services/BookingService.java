@@ -3,6 +3,7 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.BookingDto;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.PetDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Booking;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.BookingRepository;
@@ -133,6 +134,20 @@ public boolean isDateAvailable(Date startDate, Date endDate) {
         }
 
         return dates;
+    }
+
+    public List<BookingDto> getCurrentlyPresentPets() {
+        List<Booking> bookings = bookingRepository.findAll();
+        List<BookingDto> currentlyPresentPets = new ArrayList<>();
+        Date today = new Date();
+
+        for (Booking booking : bookings) {
+            if (booking.getStartDate().before(today) && booking.getEndDate().after(today)) {
+                BookingDto dto = transferToBookingDto(booking);
+                currentlyPresentPets.add(dto);
+            }
+        }
+        return currentlyPresentPets;
     }
 
 }

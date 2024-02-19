@@ -69,6 +69,9 @@ public class SpringSecurityConfig {
                                       .requestMatchers(HttpMethod.POST,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.POST,"/logbooks/{logbookId}/logs").hasAnyRole("ADMIN")
                                       .requestMatchers(HttpMethod.GET,"/logbooks/{logbookId}/logs").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET,"/bookings/currently-present").hasRole("ADMIN")
+                                      .requestMatchers(HttpMethod.GET,"/logbooks/user/{username}/id").hasRole("ADMIN")
+                                      .requestMatchers(HttpMethod.GET,"/logbooks/pets//{petId}/owner").hasRole("ADMIN")
 
 
                                       .requestMatchers(HttpMethod.POST, "/users").permitAll()
