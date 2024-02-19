@@ -21,11 +21,11 @@ public class LogbookController {
         this.logbookService = logbookService;
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<LogbookDto> getLogbookForUser(Principal principal) {
-        LogbookDto logbookDto = logbookService.getLogbookForUser(principal.getName());
-        return ResponseEntity.ok(logbookDto);
-    }
+//    @GetMapping("/user")
+//    public ResponseEntity<LogbookDto> getLogbookForUser(Principal principal) {
+//        LogbookDto logbookDto = logbookService.getLogbookForUser(principal.getName());
+//        return ResponseEntity.ok(logbookDto);
+//    }
 
     @GetMapping("/user/{username}")
     public ResponseEntity<LogbookDto> getLogbookForUser(@PathVariable String username) {
