@@ -173,12 +173,16 @@ return transferPetListToDtoList(pets);
             imageData.setPet(pet);
         }
 
-        imageData.UpdateImageData(multipartFile);
+        imageData.updateImageData(multipartFile);
 
         pet.setProfileImageData(imageData);
         petRepository.save(pet);
     }
 
+    public String getOwner(Long petId) {
+        Pet pet = petRepository.findById(petId).orElseThrow();
+        return pet.getOwner().getUsername();
+    }
 }
 
 

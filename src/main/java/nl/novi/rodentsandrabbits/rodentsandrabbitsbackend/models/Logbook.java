@@ -1,26 +1,26 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+
+import java.util.List;
 
 @Entity
-@Table(name = "diaries")
+@Table(name = "logbooks")
 public class Logbook {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column (name = "user_name")
+    private String userName;
+
+    @OneToMany(mappedBy = "logbook", cascade = CascadeType.ALL)
+    private List<LogbookLog> logs;
 
     public Logbook() {
 
     }
-
-    public Logbook(Long id) {
-        this.id = id;
-    }
-
 
     public Long getId() {
         return id;
@@ -28,5 +28,21 @@ public class Logbook {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public List<LogbookLog> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<LogbookLog> logs) {
+        this.logs = logs;
     }
 }

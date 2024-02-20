@@ -30,6 +30,9 @@ public PetDto() {}
         this.ownerUsername = ownerUsername;
     }
 
+    public PetDto(Long id, String name, String username) {
+    }
+
 
     public Long getId() {
         return id;

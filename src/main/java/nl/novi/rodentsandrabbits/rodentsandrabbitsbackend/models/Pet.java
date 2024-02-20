@@ -37,11 +37,9 @@ public class Pet {
     @ManyToMany(mappedBy = "pets")
     private Set<Booking> bookings = new HashSet<>();
 
-    @OneToMany(mappedBy = "pet")
+    @ManyToMany(mappedBy = "pets")
     @JsonIgnore
-    List<LogbookLog> diaryLogs;
-
-
+    List<LogbookLog> logbookLogs;
 
     public Pet() {
     }
@@ -139,13 +137,13 @@ public class Pet {
         this.bookings = bookings;
     }
 
-    public List<LogbookLog> getDiaryLogs() {
-        return diaryLogs;
+    public List<LogbookLog> getLogbookLogs() {
+        return logbookLogs;
     }
 
 
-    public void setDiaryLogs(List<LogbookLog> diaryLogs) {
-        this.diaryLogs = diaryLogs;
+    public void setLogbookLogs(List<LogbookLog> logbookLogs) {
+        this.logbookLogs = logbookLogs;
     }
 
     public ImageData getProfileImageData() {

@@ -52,8 +52,8 @@ public class BookingController {
     }
 
     @GetMapping("user/{username}")
-    public ResponseEntity<List<BookingDto>> getBookings(@PathVariable String username) {
-        List<BookingDto> bookings = bookingService.getAllBookings();
+    public ResponseEntity<List<BookingDto>> getBookingsByUsername(@PathVariable String username) {
+        List<BookingDto> bookings = bookingService.getAllBookingsForUser(username);
         return ResponseEntity.ok().body(bookings);
     }
 
@@ -63,6 +63,18 @@ public class BookingController {
 
         List<BookingDto> bookings = bookingService.getAllBookings();
         return ResponseEntity.ok().body(bookings);
+    }
+
+    @GetMapping("/currently-present")
+    public ResponseEntity<List<BookingDto>> getCurrentlyPresentPets() {
+        List<BookingDto> bookings = bookingService.getCurrentlyPresentPets();
+        return ResponseEntity.ok().body(bookings);
+    }
+
+    @PutMapping
+    public ResponseEntity<BookingDto> updateBooking(@RequestBody @Valid BookingDto dto) {
+        bookingService.updateBooking(dto);
+        return ResponseEntity.noContent().build();
     }
 
 

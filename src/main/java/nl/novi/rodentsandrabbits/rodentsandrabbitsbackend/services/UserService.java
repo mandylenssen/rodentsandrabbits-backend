@@ -15,9 +15,12 @@ import java.util.*;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final LogbookService logbookService;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, LogbookService logbookService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.logbookService = logbookService;
     }
 
 
@@ -60,6 +63,7 @@ public class UserService {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         User newUser = userRepository.save(toUser(userDto));
+        logbookService.createLogbookForUser(newUser.getUsername());
         return newUser.getUsername();
     }
 

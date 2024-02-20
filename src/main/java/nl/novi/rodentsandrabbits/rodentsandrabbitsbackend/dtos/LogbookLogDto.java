@@ -2,20 +2,22 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos;
 
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class LogbookLogDto {
 
     private Long id;
     private Date date;
-    private String name;
-    private Pet pet;
+    private String entry;
+    private List<Long> petsIds = new ArrayList<>();
 
-    public LogbookLogDto(Long id, Date date, String name, Pet pet) {
+    public LogbookLogDto(Long id, Date date, String entry, List<Long> petsIds) {
         this.id = id;
         this.date = date;
-        this.name = name;
-        this.pet = pet;
+        this.entry = entry;
+        this.petsIds = petsIds;
     }
 
     public LogbookLogDto() {
@@ -38,19 +40,19 @@ public class LogbookLogDto {
         this.date = date;
     }
 
-    public String getName() {
-        return name;
+    public String getEntry() {
+        return entry;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEntry(String entry) {
+        this.entry = entry;
     }
 
-    public Pet getPet() {
-        return pet;
+    public List<Long> getPetsIds() {
+        return petsIds;
     }
 
-    public void setPet(Pet pet) {
-        this.pet = pet;
+    public void setPetsIds(List<Long> pets) {
+        this.petsIds = pets;
     }
 }

@@ -128,7 +128,6 @@ public class User {
         this.authorities.remove(authority);
     }
 
-
     public List<Pet> getPets() {
         return pets;
     }
