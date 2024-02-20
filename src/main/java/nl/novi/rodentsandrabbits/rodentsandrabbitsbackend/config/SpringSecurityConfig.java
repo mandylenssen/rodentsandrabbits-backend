@@ -61,19 +61,26 @@ public class SpringSecurityConfig {
                                       .requestMatchers(HttpMethod.PUT, "/pets/**").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.POST, "/bookings").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET, "/bookings").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/bookings/user/{username}").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.DELETE, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers( "/diary", "/diarylogs").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers("/authenticated").authenticated()
                                       .requestMatchers("/authenticate").permitAll()
                                       .requestMatchers(HttpMethod.POST,"/image").permitAll()
                                       .requestMatchers(HttpMethod.POST,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.POST,"/logbooks/{logbookId}/logs").hasAnyRole("ADMIN")
-                                      .requestMatchers(HttpMethod.GET,"/logbooks/{logbookId}/logs").hasAnyRole("ADMIN", "USER")
+
+
                                       .requestMatchers(HttpMethod.GET,"/bookings/currently-present").hasRole("ADMIN")
+                                      .requestMatchers(HttpMethod.PUT,"/bookings").hasRole("ADMIN")
 
                                       .requestMatchers(HttpMethod.GET,"/logbooks/user/{username}/id").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.GET,"/logbooks/pets/{petId}/owner").hasRole("ADMIN")
-                                      .requestMatchers(HttpMethod.GET,"/logbooks/{logbookId}/logs").hasRole("ADMIN")
+                                      .requestMatchers(HttpMethod.POST,"/logbooks/{logbookId}/logs").hasAnyRole("ADMIN")
+                                      .requestMatchers(HttpMethod.GET,"/logbooks/user/{username}").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET,"/logbooks/{logbookId}").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.DELETE,"/logbooks/{logbookId}/logs/{logId}").hasRole("ADMIN")
+                                      .requestMatchers(HttpMethod.POST,"/logbooks/{logbookId}/logs/{logId}/images").hasRole("ADMIN")
+                                      .requestMatchers(HttpMethod.GET,"/logbooks/{logbookId}/logs/{logId}/images").hasAnyRole("ADMIN", "USER")
 
 
                                       .requestMatchers(HttpMethod.GET,"/pets/{petId}").hasRole("ADMIN")

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -132,16 +133,7 @@ public class LogbookService {
         return logbook.getId();
     }
 
-//    private LogbookLogDto transferToLogbookLogDto(LogbookLog log) {
-//        LogbookLogDto logDto = new LogbookLogDto();
-//        logDto.setId(log.getId());
-//        logDto.setDate(log.getDate());
-//        logDto.setEntry(log.getEntry());
-//
-//        logDto.setPetsIds(log.getPets().stream().map(Pet::getId).collect(Collectors.toList()));
-//
-//        return logDto;
-//    }
+
 private LogbookLogDto transferToLogbookLogDto(LogbookLog log) {
     LogbookLogDto dto = new LogbookLogDto();
     dto.setId(log.getId());
@@ -181,6 +173,20 @@ private LogbookLogDto transferToLogbookLogDto(LogbookLog log) {
         LogbookLogDto dto = new LogbookLogDto();
         dto.setId(logbookLog.getId());
         dto.setEntry(logbookLog.getEntry());
+        dto.setPetsIds(logbookLog.getPets().stream().map(Pet::getId).collect(Collectors.toList()));
+        dto.setDate(logbookLog.getDate());
         return dto;
+    }
+
+
+    public ImageData getImage(Long logId) {
+        LogbookLog log = logbookLogRepository.findById(logId)
+                .orElseThrow(() -> new EntityNotFoundException("Log not found for id: " + logId));
+
+            List<ImageData> imageDataList = log.getLogbookImageData();
+            if (imageDataList.isEmpty()) {
+                return null;
+            }
+            return imageDataList.get(0);
     }
 }

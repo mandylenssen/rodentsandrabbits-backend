@@ -13,12 +13,15 @@ public class BookingDto {
 
     private List<Long> petIds;
 
-    public BookingDto(Long id, Date startDate, Date endDate, String additionalInfo, List<Long> petIds) {
+    private boolean isConfirmed;
+
+    public BookingDto(Long id, Date startDate, Date endDate, String additionalInfo, List<Long> petIds, boolean isConfirmed) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.additionalInfo = additionalInfo;
         this.petIds = petIds;
+        this.isConfirmed = isConfirmed;
     }
 
 
@@ -61,6 +64,14 @@ public class BookingDto {
 
     public void setPetIds(List<Long> petIds) {
         this.petIds = petIds;
+    }
+
+    public boolean getIsConfirmed() {
+        return isConfirmed;
+    }
+
+    public void setIsConfirmed(boolean isConfirmed) {
+        this.isConfirmed = isConfirmed;
     }
 }
 

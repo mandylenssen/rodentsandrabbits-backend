@@ -3,11 +3,15 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.controllers;
 
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.LogbookDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.LogbookLogDto;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.ImageData;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services.LogbookService;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.io.IOException;
 import java.security.Principal;
 
@@ -63,4 +67,19 @@ public class LogbookController {
         return ResponseEntity.ok().body("The picture was added to the log");
     }
 
+    @GetMapping("/{logbookId}/logs/{logId}/images")
+    public ResponseEntity<Object> getLogImage(@PathVariable Long logId) throws IOException {
+        ImageData imageData = logbookService.getImage(logId);
+        if (imageData == null) {
+            return ResponseEntity.notFound().build();
+        }
+        byte[] image = ImageUtil.decompressImage(imageData.getImageData());
+        MediaType mediaType = MediaType.valueOf(imageData.getType());
+
+        return ResponseEntity.ok().contentType(mediaType).body(image);
+    }
+
+
 }
+
+

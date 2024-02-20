@@ -70,19 +70,20 @@ public boolean isDateAvailable(Date startDate, Date endDate) {
         return bookingDtos;
     }
 
-        private Booking transferToBooking(BookingDto bookingDto) {
+    private Booking transferToBooking(BookingDto bookingDto) {
         List<Pet> pets = new ArrayList<>();
         for (Long petId : bookingDto.getPetIds()) {
             Pet pet = petRepository.findById(petId).orElseThrow(EntityNotFoundException::new);
             pets.add(pet);
         }
 
-            return new Booking(
-                bookingDto.getId(),
-                bookingDto.getStartDate(),
-                bookingDto.getEndDate(),
-                bookingDto.getAdditionalInfo(),
-                pets
+        return new Booking(
+            bookingDto.getId(),
+            bookingDto.getStartDate(),
+            bookingDto.getEndDate(),
+            bookingDto.getAdditionalInfo(),
+            pets,
+            bookingDto.getIsConfirmed()
         );
     }
 
@@ -95,7 +96,8 @@ public boolean isDateAvailable(Date startDate, Date endDate) {
                 booking.getStartDate(),
                 booking.getEndDate(),
                 booking.getAdditionalInfo(),
-                booking.getPets().stream().map(Pet::getId).toList()
+                booking.getPets().stream().map(Pet::getId).toList(),
+                booking.getIsConfirmed()
         );
     }
 
@@ -150,4 +152,8 @@ public boolean isDateAvailable(Date startDate, Date endDate) {
         return currentlyPresentPets;
     }
 
+    public void updateBooking(BookingDto dto) {
+        Booking booking = transferToBooking(dto);
+        bookingRepository.save(booking);
+    }
 }

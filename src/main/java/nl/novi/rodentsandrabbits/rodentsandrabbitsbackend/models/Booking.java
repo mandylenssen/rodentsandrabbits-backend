@@ -15,15 +15,18 @@ public class Booking {
     private Date endDate;
     private String additionalInfo;
 
+    private boolean isConfirmed;
+
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Pet> pets = new ArrayList<>();
 
-    public Booking(Long id, Date startDate, Date endDate, String additionalInfo, List<Pet> pets) {
+    public Booking(Long id, Date startDate, Date endDate, String additionalInfo, List<Pet> pets, boolean isConfirmed) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.additionalInfo = additionalInfo;
         this.getPets().addAll(pets);
+        this.isConfirmed = isConfirmed;
     }
 
     public Booking() {
@@ -70,4 +73,13 @@ public class Booking {
     public void setPets(List<Pet> pets) {
         this.pets = pets;
     }
+
+    public boolean getIsConfirmed() {
+        return isConfirmed;
+    }
+
+    public void setIsConfirmed(boolean confirmed) {
+        isConfirmed = confirmed;
+    }
+
 }
