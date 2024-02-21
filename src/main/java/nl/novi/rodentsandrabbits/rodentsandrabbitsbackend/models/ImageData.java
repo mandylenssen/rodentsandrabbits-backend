@@ -32,17 +32,16 @@ public class ImageData {
     public ImageData() {
     }
 
-
-    public ImageData(MultipartFile multipartFile) throws IOException {
-        this.setName(multipartFile.getName());
-        this.setType(multipartFile.getContentType());
-        this.setImageData(ImageUtil.compressImage(multipartFile.getBytes()));
+    public ImageData(byte[] bytea, String name, String type) throws IOException {
+        this.setName(name);
+        this.setType(type);
+        this.setImageData(ImageUtil.compressImage(bytea));
     }
 
-    public void updateImageData(MultipartFile multipartFile) throws IOException {
-        this.setName(multipartFile.getName());
-        this.setType(multipartFile.getContentType());
-        this.setImageData(ImageUtil.compressImage(multipartFile.getBytes()));
+    public void updateImageData(byte[] bytea, String name, String type) throws IOException {
+        this.setName(name);
+        this.setType(type);
+        this.setImageData(ImageUtil.compressImage(bytea));
     }
 
     public Long getId() {

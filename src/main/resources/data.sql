@@ -29,14 +29,14 @@ INSERT INTO bookings_pets (bookings_id, pets_id) VALUES (1, 1), (1, 2), (1, 3), 
 
 
 
--- INSERT INTO logbook_logs (date, id, logbook_id, entry) VALUES ('2024-02-21 11:42:19.596', 1, 1, 'The rats were brought in their cage, and they are doing well. They are eating and drinking normally, and they seem to be adjusting to their new environment.'),
---                                                                 ('2021-02-21', 2, 1, 'The rats are very active and playful. They are enjoying their time in the play area, and they are getting along well with each other.'),
---                                                                 ('2021-02-22', 3, 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.'),
---                                                                 ('2021-02-23', 4, 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.'),
---                                                                 ('2021-02-24', 5, 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.'),
---                                                                 ('2021-02-25', 6, 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.'),
---                                                                 ('2021-02-26', 7, 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.');
---
--- INSERT INTO logbook_log_pets (logbook_log_id, pet_id) VALUES (1,1), (1,2), (1,3);
+INSERT INTO logbook_logs (date, id, logbook_id, entry) VALUES   ('2024-02-20', 1, 1, 'The rats were brought in their cage, and they are doing well. They are eating and drinking normally, and they seem to be adjusting to their new environment.'),
+                                                                ('2021-02-21', 2, 1, 'The rats are very active and playful. They are enjoying their time in the play area, and they are getting along well with each other.'),
+                                                                ('2021-02-22', 3, 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.'),
+                                                                ('2021-02-23', 4, 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.'),
+                                                                ('2021-02-24', 5, 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.'),
+                                                                ('2021-02-25', 6, 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.'),
+                                                                ('2021-02-26', 7, 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.');
+
+INSERT INTO logbook_log_pets (logbook_log_id, pet_id) VALUES (1,1), (1,2), (1,3);
 --
 -- INSERT INTO image_data (id, logbook_log_id, name, type, image_data) VALUES (1, 1, 'file', 'image/png', bytea('/resources/images/Squeek_rat.png'));

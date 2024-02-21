@@ -81,7 +81,7 @@ public class PetController {
 
     @PostMapping("/{petId}/profileImage")
     public ResponseEntity<String> uploadProfileImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long petId) throws IOException {
-        petService.addProfileImage(petId, multipartFile);
+        petService.addProfileImage(petId, multipartFile.getBytes(), multipartFile.getOriginalFilename(), multipartFile.getContentType());
         return ResponseEntity.ok().body("The profile picture file has been uploaded");
     }
 
