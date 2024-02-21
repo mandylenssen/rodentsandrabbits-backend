@@ -20,12 +20,12 @@ INSERT INTO pets (id, name, birthday, species, gender, details, diet, owner) VAL
 
 
 
---
--- INSERT INTO bookings (id, start_date, end_date, additional_info, is_confirmed) VALUES (1, '2021-02-20', '2021-02-28', 'The rats will be brought in their own spacious cage, equipped with bedding, food, and water containers', false),
---                                                                                     (2, '2021-02-10', '2021-03-10', 'The mice will be brought in their own comfortable enclosure, furnished with bedding, food, and water bowls', true);
---
---
--- INSERT INTO bookings_pets (bookings_id, pets_id) VALUES (1, 1), (1, 2), (1, 3), (2, 4), (2, 5);
+
+INSERT INTO bookings (id, start_date, end_date, additional_info, is_confirmed) VALUES (1, '2025-02-20', '2025-02-28', 'The rats will be brought in their own spacious cage, equipped with bedding, food, and water containers', false),
+                                                                                    (2, '2025-02-10', '2025-03-10', 'The mice will be brought in their own comfortable enclosure, furnished with bedding, food, and water bowls', true);
+
+
+INSERT INTO bookings_pets (bookings_id, pets_id) VALUES (1, 1), (1, 2), (1, 3), (2, 4), (2, 5);
 
 
 
