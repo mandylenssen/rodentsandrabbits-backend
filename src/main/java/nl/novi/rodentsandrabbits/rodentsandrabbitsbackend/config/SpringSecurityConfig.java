@@ -49,7 +49,7 @@ public class SpringSecurityConfig {
               .authorizeHttpRequests(auth ->
                               auth
 
-//                .requestMatchers("/**").permitAll()
+                .requestMatchers("/**").permitAll()
 
                                       .requestMatchers(HttpMethod.GET,"/pets/{petId}/profileImage").permitAll()
                                       .requestMatchers(HttpMethod.PUT,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
@@ -73,7 +73,7 @@ public class SpringSecurityConfig {
                                       .requestMatchers(HttpMethod.GET,"/bookings/currently-present").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.PUT,"/bookings").hasRole("ADMIN")
 
-                                      .requestMatchers(HttpMethod.GET,"/logbooks/user/{username}/id").hasRole("ADMIN")
+                                      .requestMatchers(HttpMethod.GET,"/logbooks/user/{username}/id").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET,"/logbooks/pets/{petId}/owner").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.POST,"/logbooks/{logbookId}/logs").hasAnyRole("ADMIN")
                                       .requestMatchers(HttpMethod.GET,"/logbooks/user/{username}").hasAnyRole("ADMIN", "USER")
