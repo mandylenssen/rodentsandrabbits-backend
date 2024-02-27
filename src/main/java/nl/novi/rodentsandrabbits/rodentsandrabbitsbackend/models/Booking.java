@@ -8,7 +8,7 @@ import java.util.*;
 @Table(name = "bookings")
 public class Booking {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Date startDate;
@@ -21,7 +21,7 @@ public class Booking {
     private List<Pet> pets = new ArrayList<>();
 
     public Booking(Long id, Date startDate, Date endDate, String additionalInfo, List<Pet> pets, boolean isConfirmed) {
-        this.id = id;
+//this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.additionalInfo = additionalInfo;

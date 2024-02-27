@@ -117,7 +117,7 @@ public boolean isDateAvailable(Date startDate, Date endDate) {
 
         List<Date> unavailableDates = new ArrayList<>();
         for (Map.Entry<Date, Integer> entry : bookingCounts.entrySet()) {
-            if (entry.getValue() >= 2) {
+            if (entry.getValue() >= 5) {
                 unavailableDates.add(entry.getKey());
             }
         }
