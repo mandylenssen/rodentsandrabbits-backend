@@ -70,23 +70,45 @@ public boolean isDateAvailable(Date startDate, Date endDate) {
         return bookingDtos;
     }
 
+//    private Booking transferToBooking(BookingDto bookingDto) {
+//        List<Pet> pets = new ArrayList<>();
+//        for (Long petId : bookingDto.getPetIds()) {
+//            Pet pet = petRepository.findById(petId).orElseThrow(EntityNotFoundException::new);
+//            pets.add(pet);
+//        }
+//
+//        return new Booking(
+//            bookingDto.getId(),
+//            bookingDto.getStartDate(),
+//            bookingDto.getEndDate(),
+//            bookingDto.getAdditionalInfo(),
+//            pets,
+//            bookingDto.getIsConfirmed()
+//        );
+//    }
+
+
     private Booking transferToBooking(BookingDto bookingDto) {
-        List<Pet> pets = new ArrayList<>();
-        for (Long petId : bookingDto.getPetIds()) {
-            Pet pet = petRepository.findById(petId).orElseThrow(EntityNotFoundException::new);
-            pets.add(pet);
+        Booking booking;
+        if (bookingDto.getId() != null) {
+            booking = bookingRepository.findById(bookingDto.getId())
+                    .orElseThrow(EntityNotFoundException::new);
+        } else {
+            booking = new Booking();
         }
 
-        return new Booking(
-            bookingDto.getId(),
-            bookingDto.getStartDate(),
-            bookingDto.getEndDate(),
-            bookingDto.getAdditionalInfo(),
-            pets,
-            bookingDto.getIsConfirmed()
-        );
-    }
+        booking.setStartDate(bookingDto.getStartDate());
+        booking.setEndDate(bookingDto.getEndDate());
+        booking.setAdditionalInfo(bookingDto.getAdditionalInfo());
+        booking.setIsConfirmed(bookingDto.getIsConfirmed());
 
+        List<Pet> pets = bookingDto.getPetIds().stream()
+                .map(petId -> petRepository.findById(petId).orElseThrow(EntityNotFoundException::new))
+                .collect(Collectors.toList());
+        booking.setPets(pets);
+
+        return booking;
+    }
 
 
 
