@@ -142,12 +142,11 @@ return transferPetListToDtoList(pets);
         petRepository.deleteById(petId);
     }
 
-    public void addProfileImage(Long petId, MultipartFile multipartFile) throws IOException {
+    public void addProfileImage(Long petId, byte[] bytea, String fileName, String fileType) throws IOException {
         Pet pet = petRepository.findById(petId).orElseThrow();
 
-        ImageData imageData = new ImageData(multipartFile);
+        ImageData imageData = new ImageData(bytea, fileName, fileType);
         imageData.setPet(pet);
-        imageData.setName(multipartFile.getName());
 
         pet.setProfileImageData(imageData);
         petRepository.save(pet);
@@ -173,7 +172,7 @@ return transferPetListToDtoList(pets);
             imageData.setPet(pet);
         }
 
-        imageData.updateImageData(multipartFile);
+        imageData.updateImageData(multipartFile.getBytes(), multipartFile.getName(), multipartFile.getContentType());
 
         pet.setProfileImageData(imageData);
         petRepository.save(pet);

@@ -11,6 +11,7 @@ import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.LogbookLogRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.LogbookRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.PetRepository;
+import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -119,7 +120,7 @@ public class LogbookService {
 
         List<ImageData> imageDataList = log.getLogbookImageData();
 
-        ImageData imageData = new ImageData(multipartFile);
+        ImageData imageData = new ImageData(multipartFile.getBytes(), multipartFile.getName(), multipartFile.getContentType());
         imageData.setLogbookLog(log);
         imageDataList.add(imageData);
         log.setLogbookImageData(imageDataList);
