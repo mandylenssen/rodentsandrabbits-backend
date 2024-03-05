@@ -56,25 +56,26 @@ public class SpringSecurityConfig {
                                       .requestMatchers("/authenticated").authenticated()
                                       .requestMatchers("/authenticate").permitAll()
 
-                                      .requestMatchers(HttpMethod.GET,"/pets/{petId}/profileImage").permitAll()
-                                      .requestMatchers(HttpMethod.PUT,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
-
-                                      .requestMatchers(HttpMethod.POST, "/pets/**").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.GET, "/pets/**").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.POST, "/pets").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/pets").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.GET, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.PUT, "/pets/**").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.PUT,"/pets/{petId}").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/pets/user").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.DELETE, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.POST,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.PUT,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET,"/pets/{petId}/owner").hasRole("ADMIN")
+
+
+
                                       .requestMatchers(HttpMethod.POST, "/bookings").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET, "/bookings").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET, "/bookings/user/{username}").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.DELETE, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers( "/diary", "/diarylogs").hasAnyRole("ADMIN", "USER")
-
-                                      .requestMatchers(HttpMethod.POST,"/image").permitAll()
-                                      .requestMatchers(HttpMethod.POST,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
-
-
                                       .requestMatchers(HttpMethod.GET,"/bookings/currently-present").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.PUT,"/bookings").hasRole("ADMIN")
+
+
 
                                       .requestMatchers(HttpMethod.GET,"/logbooks/user/{username}/id").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET,"/logbooks/pets/{petId}/owner").hasRole("ADMIN")
@@ -86,8 +87,7 @@ public class SpringSecurityConfig {
                                       .requestMatchers(HttpMethod.GET,"/logbooks/{logbookId}/logs/{logId}/images").hasAnyRole("ADMIN", "USER")
 
 
-                                      .requestMatchers(HttpMethod.GET,"/pets/{petId}").hasRole("ADMIN")
-                                      .requestMatchers(HttpMethod.GET,"/pets/{petId}/owner").hasRole("ADMIN")
+
 
 
 
