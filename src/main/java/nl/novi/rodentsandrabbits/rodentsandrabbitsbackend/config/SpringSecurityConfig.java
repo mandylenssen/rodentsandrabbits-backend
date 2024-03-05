@@ -53,6 +53,9 @@ public class SpringSecurityConfig {
                                       .requestMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN")
                                       .requestMatchers(HttpMethod.POST, "/users").permitAll()
 
+                                      .requestMatchers("/authenticated").authenticated()
+                                      .requestMatchers("/authenticate").permitAll()
+
                                       .requestMatchers(HttpMethod.GET,"/pets/{petId}/profileImage").permitAll()
                                       .requestMatchers(HttpMethod.PUT,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
 
@@ -65,8 +68,7 @@ public class SpringSecurityConfig {
                                       .requestMatchers(HttpMethod.GET, "/bookings/user/{username}").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.DELETE, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers( "/diary", "/diarylogs").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers("/authenticated").authenticated()
-                                      .requestMatchers("/authenticate").permitAll()
+
                                       .requestMatchers(HttpMethod.POST,"/image").permitAll()
                                       .requestMatchers(HttpMethod.POST,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
 
