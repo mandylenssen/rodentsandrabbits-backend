@@ -49,12 +49,13 @@ public class SpringSecurityConfig {
               .authorizeHttpRequests(auth ->
                               auth
 
-                .requestMatchers("/**").permitAll()
+//                .requestMatchers("/**").permitAll()
+                                      .requestMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN")
+                                      .requestMatchers(HttpMethod.POST, "/users").permitAll()
 
                                       .requestMatchers(HttpMethod.GET,"/pets/{petId}/profileImage").permitAll()
                                       .requestMatchers(HttpMethod.PUT,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN")
-                                      .requestMatchers(HttpMethod.GET,"/users/**").hasRole("ADMIN")
+
                                       .requestMatchers(HttpMethod.POST, "/pets/**").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET, "/pets/**").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
@@ -87,7 +88,7 @@ public class SpringSecurityConfig {
                                       .requestMatchers(HttpMethod.GET,"/pets/{petId}/owner").hasRole("ADMIN")
 
 
-                                      .requestMatchers(HttpMethod.POST, "/users").permitAll()
+
                                       .requestMatchers(HttpMethod.GET, "/bookings/availability").permitAll()
                                       .requestMatchers(HttpMethod.GET, "/bookings/unavailable-dates").permitAll()
                                       .requestMatchers(HttpMethod.GET, "/bookings/user").permitAll()
