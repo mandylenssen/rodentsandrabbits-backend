@@ -134,13 +134,16 @@ return transferPetListToDtoList(pets);
     return transferPetListToDtoList(pets);
     }
 
-    public void deletePet(Long petId, String name) {
+
+
+    public void deletePet(Long petId, String name, boolean isAdmin) {
         Pet pet = petRepository.findById(petId).orElseThrow();
-        if (!pet.getOwner().getUsername().equals(name)) {
-            throw new AuthorizationServiceException("Pet does not belong to user");
+        if (!pet.getOwner().getUsername().equals(name) && !isAdmin) {
+            throw new AuthorizationServiceException("Pet does not belong to user or user is not admin");
         }
         petRepository.deleteById(petId);
     }
+
 
     public void addProfileImage(Long petId, byte[] bytea, String fileName, String fileType) throws IOException {
         Pet pet = petRepository.findById(petId).orElseThrow();

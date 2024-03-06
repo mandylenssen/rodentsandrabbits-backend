@@ -5,12 +5,13 @@ import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.PetDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.ImageData;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services.PetService;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
+import org.springframework.security.core.Authentication;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.net.URI;
 import java.security.Principal;
@@ -73,11 +74,18 @@ public class PetController {
     }
 
 
+
     @DeleteMapping("/{petId}")
-    public ResponseEntity<Object> deletePet(@PathVariable Long petId, Principal principal) {
-        petService.deletePet(petId, principal.getName());
+    public ResponseEntity<Object> deletePet(@PathVariable Long petId, Principal principal, Authentication authentication) {
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+
+        petService.deletePet(petId, principal.getName(), isAdmin);
+
         return ResponseEntity.noContent().build();
     }
+
+
 
     @PostMapping("/{petId}/profileImage")
     public ResponseEntity<String> uploadProfileImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long petId) throws IOException {
