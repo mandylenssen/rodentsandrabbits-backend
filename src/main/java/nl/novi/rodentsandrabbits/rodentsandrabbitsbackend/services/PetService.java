@@ -196,12 +196,17 @@ public PetDto getPetById(long id) {
 
 
     public ImageData getProfileImage(Long petId) {
-        Optional<Pet> petOptional = petRepository.findById(petId);
-        if (!petOptional.isPresent()) {
-            throw new IllegalStateException("Pet not found with id: " + petId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new IllegalStateException("Pet not found with id: " + petId));
+
+        if (!pet.getOwner().getUsername().equals(currentUsername) && !isAdmin) {
+            throw new AuthorizationServiceException("User is not authorized to view this pet's profile image");
         }
 
-        Pet pet = petOptional.get();
         return pet.getProfileImageData();
     }
 
