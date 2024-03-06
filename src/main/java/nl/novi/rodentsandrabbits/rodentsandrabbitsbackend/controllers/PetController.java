@@ -35,7 +35,6 @@ public class PetController {
     public ResponseEntity<Object> addPet(@Valid @RequestBody PetDto petDto) {
         PetDto createdPetDto = petService.addPet(petDto);
         return ResponseEntity.created(null).body(createdPetDto);
-
     }
 
     @GetMapping

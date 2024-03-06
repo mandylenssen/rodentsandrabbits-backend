@@ -3,14 +3,15 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.PetDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.ImageData;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.User;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.PetRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.UserRepository;
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 
 import java.io.IOException;
 import java.util.*;
@@ -27,7 +28,16 @@ public class PetService {
         this.userRepository = userRepository;
     }
 
+
     public PetDto addPet(PetDto dto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        if (!dto.getOwnerUsername().equals(currentUsername) && !isAdmin) {
+            throw new AuthorizationServiceException("User is not authorized to add pets for this owner");
+        }
+
         Pet pet = transferToPet(dto);
         petRepository.save(pet);
         return transferToDto(pet);
