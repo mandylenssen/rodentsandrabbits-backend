@@ -210,17 +210,21 @@ public PetDto getPetById(long id) {
         return pet.getProfileImageData();
     }
 
-    public void updateProfileImage(Long petId, MultipartFile multipartFile) throws IOException {
-        Pet pet = petRepository.findById(petId).orElseThrow();
 
-        ImageData imageData = pet.getProfileImageData();
+    public void updateProfileImage(Long petId, MultipartFile multipartFile, String username) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
-        if (imageData == null) {
-            imageData = new ImageData();
-            imageData.setPet(pet);
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new NoSuchElementException("Pet not found with ID " + petId));
+
+        if (!pet.getOwner().getUsername().equals(username) && !isAdmin) {
+            throw new AuthorizationServiceException("Not authorized to update profile image for this pet");
         }
 
-        imageData.updateImageData(multipartFile.getBytes(), multipartFile.getName(), multipartFile.getContentType());
+        ImageData imageData = pet.getProfileImageData() == null ? new ImageData() : pet.getProfileImageData();
+        imageData.updateImageData(multipartFile.getBytes(), multipartFile.getOriginalFilename(), multipartFile.getContentType());
+        imageData.setPet(pet);
 
         pet.setProfileImageData(imageData);
         petRepository.save(pet);

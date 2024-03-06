@@ -109,10 +109,12 @@ public class PetController {
 
 
     @PutMapping("/{petId}/profileImage")
-    public ResponseEntity<String> updateProfileImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long petId) throws IOException {
-        petService.updateProfileImage(petId, multipartFile);
+    public ResponseEntity<String> updateProfileImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long petId, Principal principal) throws IOException {
+        String username = principal.getName();
+        petService.updateProfileImage(petId, multipartFile, username);
         return ResponseEntity.ok().body("The profile picture file has been updated");
     }
+
 
     @GetMapping("/{petId}/owner")
     public ResponseEntity<String> getOwner(@PathVariable Long petId) {
