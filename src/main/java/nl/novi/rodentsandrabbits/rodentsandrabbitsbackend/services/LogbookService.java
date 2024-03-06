@@ -182,15 +182,37 @@ private LogbookLogDto transferToLogbookLogDto(LogbookLog log) {
         return dto;
     }
 
+    public ImageData getImage(Long logId) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
-    public ImageData getImage(Long logId) {
         LogbookLog log = logbookLogRepository.findById(logId)
                 .orElseThrow(() -> new EntityNotFoundException("Log not found for id: " + logId));
 
-            List<ImageData> imageDataList = log.getLogbookImageData();
-            if (imageDataList.isEmpty()) {
-                return null;
-            }
-            return imageDataList.get(0);
+        Logbook logbook = log.getLogbook();
+        String logbookOwnerUsername = logbook.getUserName();
+
+        if (!currentUsername.equals(logbookOwnerUsername) && !isAdmin) {
+            throw new AuthorizationServiceException("You do not have permission to access this image.");
+        }
+
+        List<ImageData> imageDataList = log.getLogbookImageData();
+        if (imageDataList.isEmpty()) {
+            return null;
+        }
+        return imageDataList.get(0);
     }
+
+
+//    public ImageData getImage(Long logId) {
+//        LogbookLog log = logbookLogRepository.findById(logId)
+//                .orElseThrow(() -> new EntityNotFoundException("Log not found for id: " + logId));
+//
+//            List<ImageData> imageDataList = log.getLogbookImageData();
+//            if (imageDataList.isEmpty()) {
+//                return null;
+//            }
+//            return imageDataList.get(0);
+//    }
 }
