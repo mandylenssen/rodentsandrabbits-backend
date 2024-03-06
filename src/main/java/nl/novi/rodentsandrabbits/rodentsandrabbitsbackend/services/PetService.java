@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-
 import java.io.IOException;
 import java.util.*;
 
@@ -45,10 +44,13 @@ public class PetService {
 
 
     public PetDto updatePet(Long petId, PetDto dto, String username) {
-        Pet pet = petRepository.findById(petId).orElseThrow();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
-        if (!username.equals(pet.getOwner().getUsername())) {
-            throw new AuthorizationServiceException("Pet does not belong to user");
+        Pet pet = petRepository.findById(petId).orElseThrow(() -> new NoSuchElementException("Pet not found"));
+
+        if (!username.equals(pet.getOwner().getUsername()) && !isAdmin) {
+            throw new AuthorizationServiceException("User is not authorized to update this pet");
         }
 
         pet.setName(dto.getName());

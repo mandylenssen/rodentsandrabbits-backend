@@ -50,13 +50,14 @@ public class SpringSecurityConfig {
                               auth
 
 //                .requestMatchers("/**").permitAll()
-                                      .requestMatchers(HttpMethod.POST,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
+
                                       .requestMatchers(HttpMethod.GET,"/users/{username}").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.POST, "/users").permitAll()
 
                                       .requestMatchers("/authenticated").authenticated()
                                       .requestMatchers("/authenticate").permitAll()
 
+                                      .requestMatchers(HttpMethod.POST,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.POST, "/pets").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET, "/pets").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.GET, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
