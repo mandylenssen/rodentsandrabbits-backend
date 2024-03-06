@@ -27,23 +27,23 @@ public class DataLoader implements InitializingBean {
         try {
             byte[] squeekProfileImageBytea = Files.readAllBytes(Path.of("src/main/resources/images/Squeek_rat.png"));
 
-            petService.addProfileImage(1L, squeekProfileImageBytea, "Squeek_rat.png", "image/png");
+            petService.addProfileImage(1L, squeekProfileImageBytea, "Squeek_rat.png", "image/png", "system");
 
             byte[] whiskersProfileImageBytea = Files.readAllBytes(Path.of("src/main/resources/images/Whiskers_rat.png"));
 
-            petService.addProfileImage(2L, whiskersProfileImageBytea, "Whiskers_rat.png", "image/png");
+            petService.addProfileImage(2L, whiskersProfileImageBytea, "Whiskers_rat.png", "image/png", "system");
 
             byte[] nimbusProfileImageBytea = Files.readAllBytes(Path.of("src/main/resources/images/Nimbus_rat.png"));
 
-            petService.addProfileImage(3L, nimbusProfileImageBytea, "Nimbus_rat.png", "image/png");
+            petService.addProfileImage(3L, nimbusProfileImageBytea, "Nimbus_rat.png", "image/png", "system");
 
             byte[] nibblesProfileImageBytea = Files.readAllBytes(Path.of("src/main/resources/images/Nibbles_mouse.png"));
 
-            petService.addProfileImage(4L, nibblesProfileImageBytea, "Nibbles_mouse.png", "image/png");
+            petService.addProfileImage(4L, nibblesProfileImageBytea, "Nibbles_mouse.png", "image/png", "system");
 
             byte[] peanutProfileImageBytea = Files.readAllBytes(Path.of("src/main/resources/images/Peanut_mouse.png"));
 
-            petService.addProfileImage(5L, peanutProfileImageBytea, "Peanut_mouse.png", "image/png");
+            petService.addProfileImage(5L, peanutProfileImageBytea, "Peanut_mouse.png", "image/png", "system");
 
 
         }

@@ -145,8 +145,12 @@ return transferPetListToDtoList(pets);
     }
 
 
-    public void addProfileImage(Long petId, byte[] bytea, String fileName, String fileType) throws IOException {
-        Pet pet = petRepository.findById(petId).orElseThrow();
+    public void addProfileImage(Long petId, byte[] bytea, String fileName, String fileType, String username) throws IOException {
+        Pet pet = petRepository.findById(petId).orElseThrow(() -> new NoSuchElementException("Pet not found with ID " + petId));
+
+        if (!pet.getOwner().getUsername().equals(username) && !userHasRole("ROLE_ADMIN", username)) {
+            throw new AuthorizationServiceException("Not authorized to add profile image to this pet");
+        }
 
         ImageData imageData = new ImageData(bytea, fileName, fileType);
         imageData.setPet(pet);
@@ -154,6 +158,17 @@ return transferPetListToDtoList(pets);
         pet.setProfileImageData(imageData);
         petRepository.save(pet);
     }
+
+    private boolean userHasRole(String role, String username) {
+        if ("system".equals(username)) {
+            return true;
+        }
+        return userRepository.findByUsername(username)
+                .map(user -> user.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals(role)))
+                .orElse(false);
+    }
+
+
 
     public ImageData getProfileImage(Long petId) {
         Optional<Pet> petOptional = petRepository.findById(petId);
