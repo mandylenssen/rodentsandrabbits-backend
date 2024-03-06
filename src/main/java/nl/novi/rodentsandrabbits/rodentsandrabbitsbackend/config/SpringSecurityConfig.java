@@ -50,7 +50,7 @@ public class SpringSecurityConfig {
                               auth
 
 //                .requestMatchers("/**").permitAll()
-                                      .requestMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN")
+                                      .requestMatchers(HttpMethod.GET,"/users/{username}").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.POST, "/users").permitAll()
 
                                       .requestMatchers("/authenticated").authenticated()
@@ -60,7 +60,7 @@ public class SpringSecurityConfig {
                                       .requestMatchers(HttpMethod.GET, "/pets").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.GET, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.PUT,"/pets/{petId}").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.GET, "/pets/user").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/pets/user").hasRole("USER")
                                       .requestMatchers(HttpMethod.DELETE, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.POST,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
