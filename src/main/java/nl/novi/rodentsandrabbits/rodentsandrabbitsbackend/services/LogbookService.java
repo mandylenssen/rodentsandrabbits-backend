@@ -11,15 +11,17 @@ import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.LogbookLogRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.LogbookRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.PetRepository;
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,9 +39,17 @@ public class LogbookService {
         this.petRepository = petRepository;
     }
 
-    public LogbookDto getLogbookForUser(String username) {
-        Logbook logbook = logbookRepository.findByUserName(username)
-                .orElseThrow(() -> new LogbookNotFoundException("Logbook not found for username: " + username));
+    public LogbookDto getLogbookForUser(String requestedUsername) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        if (!currentUsername.equals(requestedUsername) && !isAdmin) {
+            throw new AuthorizationServiceException("Users can only access their own logbook or must be an admin.");
+        }
+
+        Logbook logbook = logbookRepository.findByUserName(requestedUsername)
+                .orElseThrow(() -> new LogbookNotFoundException("Logbook not found for username: " + requestedUsername));
         return transferToDto(logbook);
     }
 

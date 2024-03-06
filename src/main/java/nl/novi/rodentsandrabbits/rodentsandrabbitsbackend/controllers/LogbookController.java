@@ -25,11 +25,6 @@ public class LogbookController {
         this.logbookService = logbookService;
     }
 
-//    @GetMapping("/user")
-//    public ResponseEntity<LogbookDto> getLogbookForUser(Principal principal) {
-//        LogbookDto logbookDto = logbookService.getLogbookForUser(principal.getName());
-//        return ResponseEntity.ok(logbookDto);
-//    }
 
     @GetMapping("/user/{username}")
     public ResponseEntity<LogbookDto> getLogbookForUser(@PathVariable String username) {
@@ -37,11 +32,11 @@ public class LogbookController {
         return ResponseEntity.ok(logbookDto);
     }
 
- @GetMapping("user/{username}/id")
- public ResponseEntity<Long> getLogbookIdForUser(@PathVariable String username) {
-     Long logbookId = logbookService.getLogbookIdForUser(username);
-     return ResponseEntity.ok(logbookId);
- }
+    @GetMapping("user/{username}/id")
+    public ResponseEntity<Long> getLogbookIdForUser(@PathVariable String username) {
+        Long logbookId = logbookService.getLogbookIdForUser(username);
+        return ResponseEntity.ok(logbookId);
+    }
 
     @GetMapping("/{logbookId}")
     public ResponseEntity<LogbookDto> getLogbook(@PathVariable Long logbookId) {
