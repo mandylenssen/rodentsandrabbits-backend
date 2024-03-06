@@ -84,11 +84,24 @@ return transferPetListToDtoList(pets);
         return petDtoList;
     }
 
-    public PetDto getPetById(long id) {
-        Pet pet = petRepository.findById(id).orElseThrow();
+//    public PetDto getPetById(long id) {
+//        Pet pet = petRepository.findById(id).orElseThrow();
+//
+//        return transferToDto(pet);
+//    }
+public PetDto getPetById(long id) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String currentUsername = authentication.getName();
+    boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
-        return transferToDto(pet);
+    Pet pet = petRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Pet not found with ID " + id));
+
+    if (!pet.getOwner().getUsername().equals(currentUsername) && !isAdmin) {
+        throw new AuthorizationServiceException("User is not authorized to view this pet");
     }
+
+    return transferToDto(pet);
+}
 
 //
 //    public void deletePet(long id) {
