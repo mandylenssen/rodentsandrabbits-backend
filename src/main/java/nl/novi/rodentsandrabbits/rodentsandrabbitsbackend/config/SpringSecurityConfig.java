@@ -73,9 +73,9 @@ public class SpringSecurityConfig {
                                       .requestMatchers(HttpMethod.POST, "/bookings").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET, "/bookings/availability").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET, "/bookings/unavailable-dates").hasAnyRole("ADMIN", "USER")
-
-                                      .requestMatchers(HttpMethod.GET, "/bookings").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/bookings").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.GET, "/bookings/user/{username}").hasAnyRole("ADMIN", "USER")
+
                                       .requestMatchers(HttpMethod.GET,"/bookings/currently-present").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.PUT,"/bookings").hasRole("ADMIN")
 

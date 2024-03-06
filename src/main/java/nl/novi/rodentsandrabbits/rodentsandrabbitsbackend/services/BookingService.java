@@ -82,9 +82,17 @@ public class BookingService {
         return bookingDtos;
     }
 
-    public List<BookingDto> getAllBookingsForUser(String username) {
-        List<Booking> bookings = bookingRepository.findByPetsOwnerUsername(username);
 
+    public List<BookingDto> getAllBookingsForUser(String requestedUsername) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        if (!currentUsername.equals(requestedUsername) && !isAdmin) {
+            throw new AuthorizationServiceException("Users can only access their own bookings or must be an admin.");
+        }
+
+        List<Booking> bookings = bookingRepository.findByPetsOwnerUsername(requestedUsername);
         List<BookingDto> bookingDtos = new ArrayList<>();
 
         for (Booking booking : bookings) {
@@ -93,24 +101,6 @@ public class BookingService {
 
         return bookingDtos;
     }
-
-//    private Booking transferToBooking(BookingDto bookingDto) {
-//        List<Pet> pets = new ArrayList<>();
-//        for (Long petId : bookingDto.getPetIds()) {
-//            Pet pet = petRepository.findById(petId).orElseThrow(EntityNotFoundException::new);
-//            pets.add(pet);
-//        }
-//
-//        return new Booking(
-//            bookingDto.getId(),
-//            bookingDto.getStartDate(),
-//            bookingDto.getEndDate(),
-//            bookingDto.getAdditionalInfo(),
-//            pets,
-//            bookingDto.getIsConfirmed()
-//        );
-//    }
-
 
     private Booking transferToBooking(BookingDto bookingDto) {
         Booking booking;
