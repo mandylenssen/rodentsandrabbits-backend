@@ -64,7 +64,6 @@ public class SpringSecurityConfig {
                                       .requestMatchers(HttpMethod.PUT,"/pets/{petId}").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET, "/pets/user").hasRole("USER")
                                       .requestMatchers(HttpMethod.DELETE, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
-
                                       .requestMatchers(HttpMethod.GET,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.PUT,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET,"/pets/{petId}/owner").hasRole("ADMIN")
@@ -72,11 +71,16 @@ public class SpringSecurityConfig {
 
 
                                       .requestMatchers(HttpMethod.POST, "/bookings").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/bookings/availability").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/bookings/unavailable-dates").hasAnyRole("ADMIN", "USER")
+
                                       .requestMatchers(HttpMethod.GET, "/bookings").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET, "/bookings/user/{username}").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET,"/bookings/currently-present").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.PUT,"/bookings").hasRole("ADMIN")
 
+
+                                      .requestMatchers(HttpMethod.GET, "/bookings/user").permitAll()
 
 
                                       .requestMatchers(HttpMethod.GET,"/logbooks/user/{username}/id").hasAnyRole("ADMIN", "USER")
@@ -93,9 +97,7 @@ public class SpringSecurityConfig {
 
 
 
-                                      .requestMatchers(HttpMethod.GET, "/bookings/availability").permitAll()
-                                      .requestMatchers(HttpMethod.GET, "/bookings/unavailable-dates").permitAll()
-                                      .requestMatchers(HttpMethod.GET, "/bookings/user").permitAll()
+
                                       .anyRequest().denyAll()
               )
               .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

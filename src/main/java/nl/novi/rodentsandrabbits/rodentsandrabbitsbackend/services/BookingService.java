@@ -1,9 +1,11 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.BookingDto;
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.PetDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Booking;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.BookingRepository;
@@ -11,8 +13,16 @@ import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.PetReposi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 @Service
 public class BookingService {
@@ -27,25 +37,39 @@ public class BookingService {
     }
 
     public long createBooking(BookingDto bookingDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        for (Long petId : bookingDto.getPetIds()) {
+            Pet pet = petRepository.findById(petId)
+                    .orElseThrow(() -> new NoSuchElementException("Pet not found with ID: " + petId));
+
+            if (!pet.getOwner().getUsername().equals(currentUsername) && !isAdmin) {
+                throw new AuthorizationServiceException("Not authorized to create booking for pet ID: " + petId);
+            }
+            boolean isAvailable = isDateAvailable(bookingDto.getStartDate(), bookingDto.getEndDate());
+            if (!isAvailable) {
+                throw new IllegalStateException("One or more dates in the requested booking period are not available.");
+            }
+        }
+
         Booking booking = transferToBooking(bookingDto);
         bookingRepository.save(booking);
         return booking.getId();
     }
 
+    public boolean isDateAvailable(Date startDate, Date endDate) {
+        List<LocalDate> datesToCheck = getDatesBetween(startDate, endDate);
+        List<LocalDate> unavailableDates = getUnavailableDates().stream()
+                .map(date -> date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+                .collect(Collectors.toList());
 
-
-public boolean isDateAvailable(Date startDate, Date endDate) {
-    List<Date> datesToCheck = getDatesBetween(startDate, endDate);
-    List<Date> unavailableDates = getUnavailableDates();
-
-    for (Date date : datesToCheck) {
-        if (unavailableDates.contains(date)) {
-            return false;
-        }
+        return Collections.disjoint(datesToCheck, unavailableDates);
     }
 
-    return true;
-}
+
+
 
     public List<BookingDto> getAllBookings() {
         List<Booking> bookings = bookingRepository.findAll();
@@ -125,40 +149,71 @@ public boolean isDateAvailable(Date startDate, Date endDate) {
 
 
 
+//    public List<Date> getUnavailableDates() {
+//        List<Booking> bookings = bookingRepository.findAll();
+//        Map<Date, Integer> bookingCounts = new HashMap<>();
+//
+//        for (Booking booking : bookings) {
+//            List<Date> dates = getDatesBetween(booking.getStartDate(), booking.getEndDate());
+//            for (Date date : dates) {
+//                bookingCounts.put(date, bookingCounts.getOrDefault(date, 0) + 1);
+//            }
+//        }
+//
+//        List<Date> unavailableDates = new ArrayList<>();
+//        for (Map.Entry<Date, Integer> entry : bookingCounts.entrySet()) {
+//            if (entry.getValue() >= 5) {
+//                unavailableDates.add(entry.getKey());
+//            }
+//        }
+//
+//        return unavailableDates.stream().distinct().collect(Collectors.toList());
+//    }
+
     public List<Date> getUnavailableDates() {
         List<Booking> bookings = bookingRepository.findAll();
-        Map<Date, Integer> bookingCounts = new HashMap<>();
+        Map<LocalDate, Integer> bookingCounts = new HashMap<>();
 
-        // Populate bookingCounts with the number of bookings for each date
         for (Booking booking : bookings) {
-            List<Date> dates = getDatesBetween(booking.getStartDate(), booking.getEndDate());
-            for (Date date : dates) {
+            // Generate all dates between startDate and endDate, inclusive
+            List<LocalDate> dates = getDatesBetween(booking.getStartDate(), booking.getEndDate());
+            for (LocalDate date : dates) {
                 bookingCounts.put(date, bookingCounts.getOrDefault(date, 0) + 1);
             }
         }
 
-        List<Date> unavailableDates = new ArrayList<>();
-        for (Map.Entry<Date, Integer> entry : bookingCounts.entrySet()) {
-            if (entry.getValue() >= 5) {
-                unavailableDates.add(entry.getKey());
-            }
-        }
+        // Find dates where the booking count is 5 or more
+        List<Date> unavailableDates = bookingCounts.entrySet().stream()
+                .filter(entry -> entry.getValue() >= 5)
+                .map(entry -> Date.from(entry.getKey().atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .collect(Collectors.toList());
 
-        return unavailableDates.stream().distinct().collect(Collectors.toList());
+        return unavailableDates;
     }
 
-    private List<Date> getDatesBetween(Date startDate, Date endDate) {
-        List<Date> dates = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-
-        while (calendar.getTime().before(endDate) || calendar.getTime().equals(endDate)) {
-            dates.add(calendar.getTime());
-            calendar.add(Calendar.DATE, 1);
+    private List<LocalDate> getDatesBetween(Date startDate, Date endDate) {
+        LocalDate start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        List<LocalDate> totalDates = new ArrayList<>();
+        while (!start.isAfter(end)) {
+            totalDates.add(start);
+            start = start.plusDays(1);
         }
-
-        return dates;
+        return totalDates;
     }
+
+//    private List<Date> getDatesBetween(Date startDate, Date endDate) {
+//        List<Date> dates = new ArrayList<>();
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(startDate);
+//
+//        while (calendar.getTime().before(endDate) || calendar.getTime().equals(endDate)) {
+//            dates.add(calendar.getTime());
+//            calendar.add(Calendar.DATE, 1);
+//        }
+//
+//        return dates;
+//    }
 
     public List<BookingDto> getCurrentlyPresentPets() {
         List<Booking> bookings = bookingRepository.findAll();
