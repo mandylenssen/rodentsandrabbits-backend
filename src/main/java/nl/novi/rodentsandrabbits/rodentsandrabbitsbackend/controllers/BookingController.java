@@ -57,14 +57,6 @@ public class BookingController {
         return ResponseEntity.ok().body(bookings);
     }
 
-    @GetMapping("user")
-    public ResponseEntity<List<BookingDto>> getBookings(Principal principal) {
-        String username = principal.getName();
-
-        List<BookingDto> bookings = bookingService.getAllBookings();
-        return ResponseEntity.ok().body(bookings);
-    }
-
     @GetMapping("/currently-present")
     public ResponseEntity<List<BookingDto>> getCurrentlyPresentPets() {
         List<BookingDto> bookings = bookingService.getCurrentlyPresentPets();
