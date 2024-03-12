@@ -86,11 +86,7 @@ return transferPetListToDtoList(pets);
         return petDtoList;
     }
 
-//    public PetDto getPetById(long id) {
-//        Pet pet = petRepository.findById(id).orElseThrow();
-//
-//        return transferToDto(pet);
-//    }
+
 public PetDto getPetById(long id) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String currentUsername = authentication.getName();
@@ -105,10 +101,6 @@ public PetDto getPetById(long id) {
     return transferToDto(pet);
 }
 
-//
-//    public void deletePet(long id) {
-//        petRepository.deleteById(id);
-//    }
 
     public List<PetDto> getPetByOwnerId(String username) {
         List<Pet> pets = petRepository.findAllByOwnerUsername(username);

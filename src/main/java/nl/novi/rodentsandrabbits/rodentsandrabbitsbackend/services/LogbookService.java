@@ -205,14 +205,4 @@ private LogbookLogDto transferToLogbookLogDto(LogbookLog log) {
     }
 
 
-//    public ImageData getImage(Long logId) {
-//        LogbookLog log = logbookLogRepository.findById(logId)
-//                .orElseThrow(() -> new EntityNotFoundException("Log not found for id: " + logId));
-//
-//            List<ImageData> imageDataList = log.getLogbookImageData();
-//            if (imageDataList.isEmpty()) {
-//                return null;
-//            }
-//            return imageDataList.get(0);
-//    }
 }
