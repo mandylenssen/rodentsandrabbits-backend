@@ -101,15 +101,6 @@ public PetDto getPetById(long id) {
     return transferToDto(pet);
 }
 
-
-    public List<PetDto> getPetByOwnerId(String username) {
-        List<Pet> pets = petRepository.findAllByOwnerUsername(username);
-        return transferPetListToDtoList(pets);
-    }
-
-
-
-
     private Pet transferToPet(PetDto dto) {
         var pet = new Pet();
 
@@ -138,12 +129,6 @@ public PetDto getPetById(long id) {
         dto.setDiet(pet.getDiet());
         dto.setOwnerUsername(pet.getOwner().getUsername());
         return dto;
-    }
-
-
-    public List<PetDto> getAllPetsByName(String name) {
-        List<Pet> pets = petRepository.findAllPetsByName(name);
-        return transferPetListToDtoList(pets);
     }
 
     public List<PetDto> getAllPetsByUsername(String username) {
