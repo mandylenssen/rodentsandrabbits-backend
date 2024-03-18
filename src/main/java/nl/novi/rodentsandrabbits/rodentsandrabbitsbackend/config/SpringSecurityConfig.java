@@ -49,48 +49,43 @@ public class SpringSecurityConfig {
               .authorizeHttpRequests(auth ->
                               auth
 
-                .requestMatchers("/**").permitAll()
+//                .requestMatchers("/**").permitAll()
 
-                                      .requestMatchers(HttpMethod.GET,"/pets/{petId}/profileImage").permitAll()
-                                      .requestMatchers(HttpMethod.PUT,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.GET,"/users").hasAnyRole("ADMIN")
-                                      .requestMatchers(HttpMethod.GET,"/users/**").hasRole("ADMIN")
-                                      .requestMatchers(HttpMethod.POST, "/pets/**").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.GET, "/pets/**").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.GET, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.PUT, "/pets/**").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.POST, "/bookings").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.GET, "/bookings").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.GET, "/bookings/user/{username}").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.DELETE, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers( "/diary", "/diarylogs").hasAnyRole("ADMIN", "USER")
+
+                                      .requestMatchers(HttpMethod.GET,"/users/{username}").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.POST, "/users").permitAll()
+
                                       .requestMatchers("/authenticated").authenticated()
                                       .requestMatchers("/authenticate").permitAll()
-                                      .requestMatchers(HttpMethod.POST,"/image").permitAll()
+
                                       .requestMatchers(HttpMethod.POST,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.POST, "/pets").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/pets").hasRole("ADMIN")
+                                      .requestMatchers(HttpMethod.GET, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.PUT,"/pets/{petId}").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/pets/user").hasRole("USER")
+                                      .requestMatchers(HttpMethod.DELETE, "/pets/{petId}").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.PUT,"/pets/{petId}/profileImage").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET,"/pets/{petId}/owner").hasRole("ADMIN")
 
-
+                                      .requestMatchers(HttpMethod.POST, "/bookings").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/bookings/availability").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/bookings/unavailable-dates").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET, "/bookings").hasRole("ADMIN")
+                                      .requestMatchers(HttpMethod.GET, "/bookings/user/{username}").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET,"/bookings/currently-present").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.PUT,"/bookings").hasRole("ADMIN")
 
-                                      .requestMatchers(HttpMethod.GET,"/logbooks/user/{username}/id").hasAnyRole("ADMIN", "USER")
-                                      .requestMatchers(HttpMethod.GET,"/logbooks/pets/{petId}/owner").hasRole("ADMIN")
-                                      .requestMatchers(HttpMethod.POST,"/logbooks/{logbookId}/logs").hasAnyRole("ADMIN")
                                       .requestMatchers(HttpMethod.GET,"/logbooks/user/{username}").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.GET,"/logbooks/user/{username}/id").hasAnyRole("ADMIN", "USER")
                                       .requestMatchers(HttpMethod.GET,"/logbooks/{logbookId}").hasAnyRole("ADMIN", "USER")
+                                      .requestMatchers(HttpMethod.POST,"/logbooks/{logbookId}/logs").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.DELETE,"/logbooks/{logbookId}/logs/{logId}").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.POST,"/logbooks/{logbookId}/logs/{logId}/images").hasRole("ADMIN")
                                       .requestMatchers(HttpMethod.GET,"/logbooks/{logbookId}/logs/{logId}/images").hasAnyRole("ADMIN", "USER")
 
 
-                                      .requestMatchers(HttpMethod.GET,"/pets/{petId}").hasRole("ADMIN")
-                                      .requestMatchers(HttpMethod.GET,"/pets/{petId}/owner").hasRole("ADMIN")
-
-
-                                      .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                                      .requestMatchers(HttpMethod.GET, "/bookings/availability").permitAll()
-                                      .requestMatchers(HttpMethod.GET, "/bookings/unavailable-dates").permitAll()
-                                      .requestMatchers(HttpMethod.GET, "/bookings/user").permitAll()
                                       .anyRequest().denyAll()
               )
               .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

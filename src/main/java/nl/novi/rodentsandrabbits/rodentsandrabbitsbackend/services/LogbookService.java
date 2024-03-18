@@ -11,15 +11,17 @@ import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.LogbookLogRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.LogbookRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.PetRepository;
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,15 +39,35 @@ public class LogbookService {
         this.petRepository = petRepository;
     }
 
-    public LogbookDto getLogbookForUser(String username) {
-        Logbook logbook = logbookRepository.findByUserName(username)
-                .orElseThrow(() -> new LogbookNotFoundException("Logbook not found for username: " + username));
+    public LogbookDto getLogbookForUser(String requestedUsername) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        if (!currentUsername.equals(requestedUsername) && !isAdmin) {
+            throw new AuthorizationServiceException("Users can only access their own logbook or must be an admin.");
+        }
+
+        Logbook logbook = logbookRepository.findByUserName(requestedUsername)
+                .orElseThrow(() -> new LogbookNotFoundException("Logbook not found for username: " + requestedUsername));
         return transferToDto(logbook);
     }
 
+
     public LogbookDto getLogbookDtoById(Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
         Logbook logbook = logbookRepository.findById(id)
                 .orElseThrow(() -> new LogbookNotFoundException("Logbook not found for id: " + id));
+
+        String logbookOwnerUsername = logbook.getUserName();
+
+        if (!currentUsername.equals(logbookOwnerUsername) && !isAdmin) {
+            throw new AuthorizationServiceException("You do not have permission to access this logbook.");
+        }
+
         return transferToDto(logbook);
     }
 
@@ -62,41 +84,22 @@ public class LogbookService {
     }
 
     public LogbookLogDto addLogToLogbook(Long logbookId, LogbookLogDto logDto) {
-        // Get logbook by id
         Logbook logbook = getLogbookById(logbookId);
 
-        // Create a new LogbookLog entity from the DTO
         LogbookLog newLog = new LogbookLog();
         newLog.setEntry(logDto.getEntry());
-        newLog.setDate(logDto.getDate()); // Ensure date is correctly parsed and set
+        newLog.setDate(logDto.getDate());
 
-        // Resolve pets by their IDs and set them
         List<Pet> pets = petRepository.findAllById(logDto.getPetsIds());
         newLog.setPets(pets);
 
-        // Associate the log with its logbook
         newLog.setLogbook(logbook);
 
-        // Save the new log entity to the database
         LogbookLog savedLog = logbookLogRepository.save(newLog);
 
-        // Convert the saved entity back to DTO and return it
         return transferToLogbookLogDto(savedLog);
     }
 
-
-//    public LogbookLogDto addLogToLogbook(Long logbookId, LogbookLogDto logDto) {
-//        // get logbook by id
-//        Logbook logbook = getLogbookById(logbookId);
-//
-//        // create logbook log from logbook log dto
-//        LogbookLogDto log = addLogToLogbook(logbook, logDto);
-//
-//        // save logbook log??
-//
-//        // return logbookLogDto
-//        return log;
-//    }
 
     public void deleteLogFromLogbook(Long logbookId, Long logId) {
         deleteLog(logId);
@@ -179,15 +182,27 @@ private LogbookLogDto transferToLogbookLogDto(LogbookLog log) {
         return dto;
     }
 
+    public ImageData getImage(Long logId) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
-    public ImageData getImage(Long logId) {
         LogbookLog log = logbookLogRepository.findById(logId)
                 .orElseThrow(() -> new EntityNotFoundException("Log not found for id: " + logId));
 
-            List<ImageData> imageDataList = log.getLogbookImageData();
-            if (imageDataList.isEmpty()) {
-                return null;
-            }
-            return imageDataList.get(0);
+        Logbook logbook = log.getLogbook();
+        String logbookOwnerUsername = logbook.getUserName();
+
+        if (!currentUsername.equals(logbookOwnerUsername) && !isAdmin) {
+            throw new AuthorizationServiceException("You do not have permission to access this image.");
+        }
+
+        List<ImageData> imageDataList = log.getLogbookImageData();
+        if (imageDataList.isEmpty()) {
+            return null;
+        }
+        return imageDataList.get(0);
     }
+
+
 }

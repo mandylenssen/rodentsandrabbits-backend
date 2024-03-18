@@ -1,9 +1,7 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
 
 import jakarta.persistence.*;
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
-
-import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -137,4 +135,7 @@ public class User {
     }
 
 
+    public Collection<Object> getRoles() {
+        return null;
+    }
 }

@@ -40,13 +40,5 @@ public class UserController {
     }
 
 
-    @GetMapping
-    public ResponseEntity<String> getUsers() {
-
-
-        return ResponseEntity.ok().body("Hello World..");
-    }
-
-
 
 }

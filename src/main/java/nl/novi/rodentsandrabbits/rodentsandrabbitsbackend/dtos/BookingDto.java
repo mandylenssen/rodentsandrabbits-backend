@@ -73,5 +73,7 @@ public class BookingDto {
     public void setIsConfirmed(boolean isConfirmed) {
         this.isConfirmed = isConfirmed;
     }
+
+
 }
 

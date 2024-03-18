@@ -3,14 +3,14 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.PetDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.ImageData;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.User;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.PetRepository;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories.UserRepository;
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.IOException;
 import java.util.*;
@@ -27,7 +27,16 @@ public class PetService {
         this.userRepository = userRepository;
     }
 
+
     public PetDto addPet(PetDto dto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        if (!dto.getOwnerUsername().equals(currentUsername) && !isAdmin) {
+            throw new AuthorizationServiceException("User is not authorized to add pets for this owner");
+        }
+
         Pet pet = transferToPet(dto);
         petRepository.save(pet);
         return transferToDto(pet);
@@ -35,10 +44,13 @@ public class PetService {
 
 
     public PetDto updatePet(Long petId, PetDto dto, String username) {
-        Pet pet = petRepository.findById(petId).orElseThrow();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
-        if (!username.equals(pet.getOwner().getUsername())) {
-            throw new AuthorizationServiceException("Pet does not belong to user");
+        Pet pet = petRepository.findById(petId).orElseThrow(() -> new NoSuchElementException("Pet not found"));
+
+        if (!username.equals(pet.getOwner().getUsername()) && !isAdmin) {
+            throw new AuthorizationServiceException("User is not authorized to update this pet");
         }
 
         pet.setName(dto.getName());
@@ -74,24 +86,20 @@ return transferPetListToDtoList(pets);
         return petDtoList;
     }
 
-    public PetDto getPetById(long id) {
-        Pet pet = petRepository.findById(id).orElseThrow();
 
-        return transferToDto(pet);
+public PetDto getPetById(long id) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String currentUsername = authentication.getName();
+    boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+    Pet pet = petRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Pet not found with ID " + id));
+
+    if (!pet.getOwner().getUsername().equals(currentUsername) && !isAdmin) {
+        throw new AuthorizationServiceException("User is not authorized to view this pet");
     }
 
-//
-//    public void deletePet(long id) {
-//        petRepository.deleteById(id);
-//    }
-
-    public List<PetDto> getPetByOwnerId(String username) {
-        List<Pet> pets = petRepository.findAllByOwnerUsername(username);
-        return transferPetListToDtoList(pets);
-    }
-
-
-
+    return transferToDto(pet);
+}
 
     private Pet transferToPet(PetDto dto) {
         var pet = new Pet();
@@ -123,27 +131,28 @@ return transferPetListToDtoList(pets);
         return dto;
     }
 
-
-    public List<PetDto> getAllPetsByName(String name) {
-        List<Pet> pets = petRepository.findAllPetsByName(name);
-        return transferPetListToDtoList(pets);
-    }
-
     public List<PetDto> getAllPetsByUsername(String username) {
     List<Pet> pets = petRepository.findAllByOwnerUsername(username);
     return transferPetListToDtoList(pets);
     }
 
-    public void deletePet(Long petId, String name) {
+
+
+    public void deletePet(Long petId, String name, boolean isAdmin) {
         Pet pet = petRepository.findById(petId).orElseThrow();
-        if (!pet.getOwner().getUsername().equals(name)) {
-            throw new AuthorizationServiceException("Pet does not belong to user");
+        if (!pet.getOwner().getUsername().equals(name) && !isAdmin) {
+            throw new AuthorizationServiceException("Pet does not belong to user or user is not admin");
         }
         petRepository.deleteById(petId);
     }
 
-    public void addProfileImage(Long petId, byte[] bytea, String fileName, String fileType) throws IOException {
-        Pet pet = petRepository.findById(petId).orElseThrow();
+
+    public void addProfileImage(Long petId, byte[] bytea, String fileName, String fileType, String username) throws IOException {
+        Pet pet = petRepository.findById(petId).orElseThrow(() -> new NoSuchElementException("Pet not found with ID " + petId));
+
+        if (!pet.getOwner().getUsername().equals(username) && !userHasRole("ROLE_ADMIN", username)) {
+            throw new AuthorizationServiceException("Not authorized to add profile image to this pet");
+        }
 
         ImageData imageData = new ImageData(bytea, fileName, fileType);
         imageData.setPet(pet);
@@ -152,27 +161,47 @@ return transferPetListToDtoList(pets);
         petRepository.save(pet);
     }
 
+    private boolean userHasRole(String role, String username) {
+        if ("system".equals(username)) {
+            return true;
+        }
+        return userRepository.findByUsername(username)
+                .map(user -> user.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals(role)))
+                .orElse(false);
+    }
+
+
+
     public ImageData getProfileImage(Long petId) {
-        Optional<Pet> petOptional = petRepository.findById(petId);
-        if (!petOptional.isPresent()) {
-            throw new IllegalStateException("Pet not found with id: " + petId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new IllegalStateException("Pet not found with id: " + petId));
+
+        if (!pet.getOwner().getUsername().equals(currentUsername) && !isAdmin) {
+            throw new AuthorizationServiceException("User is not authorized to view this pet's profile image");
         }
 
-        Pet pet = petOptional.get();
         return pet.getProfileImageData();
     }
 
-    public void updateProfileImage(Long petId, MultipartFile multipartFile) throws IOException {
-        Pet pet = petRepository.findById(petId).orElseThrow();
 
-        ImageData imageData = pet.getProfileImageData();
+    public void updateProfileImage(Long petId, MultipartFile multipartFile, String username) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
-        if (imageData == null) {
-            imageData = new ImageData();
-            imageData.setPet(pet);
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new NoSuchElementException("Pet not found with ID " + petId));
+
+        if (!pet.getOwner().getUsername().equals(username) && !isAdmin) {
+            throw new AuthorizationServiceException("Not authorized to update profile image for this pet");
         }
 
-        imageData.updateImageData(multipartFile.getBytes(), multipartFile.getName(), multipartFile.getContentType());
+        ImageData imageData = pet.getProfileImageData() == null ? new ImageData() : pet.getProfileImageData();
+        imageData.updateImageData(multipartFile.getBytes(), multipartFile.getOriginalFilename(), multipartFile.getContentType());
+        imageData.setPet(pet);
 
         pet.setProfileImageData(imageData);
         petRepository.save(pet);

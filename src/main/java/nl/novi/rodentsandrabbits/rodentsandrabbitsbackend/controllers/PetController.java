@@ -5,12 +5,13 @@ import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.PetDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.ImageData;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.services.PetService;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.utils.ImageUtil;
+import org.springframework.security.core.Authentication;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.net.URI;
 import java.security.Principal;
@@ -34,7 +35,6 @@ public class PetController {
     public ResponseEntity<Object> addPet(@Valid @RequestBody PetDto petDto) {
         PetDto createdPetDto = petService.addPet(petDto);
         return ResponseEntity.created(null).body(createdPetDto);
-
     }
 
     @GetMapping
@@ -73,17 +73,27 @@ public class PetController {
     }
 
 
+
     @DeleteMapping("/{petId}")
-    public ResponseEntity<Object> deletePet(@PathVariable Long petId, Principal principal) {
-        petService.deletePet(petId, principal.getName());
+    public ResponseEntity<Object> deletePet(@PathVariable Long petId, Principal principal, Authentication authentication) {
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+
+        petService.deletePet(petId, principal.getName(), isAdmin);
+
         return ResponseEntity.noContent().build();
     }
 
+
     @PostMapping("/{petId}/profileImage")
-    public ResponseEntity<String> uploadProfileImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long petId) throws IOException {
-        petService.addProfileImage(petId, multipartFile.getBytes(), multipartFile.getOriginalFilename(), multipartFile.getContentType());
+    public ResponseEntity<String> uploadProfileImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long petId, Principal principal) throws IOException {
+        String username = principal.getName();
+        petService.addProfileImage(petId, multipartFile.getBytes(), multipartFile.getOriginalFilename(), multipartFile.getContentType(), username);
         return ResponseEntity.ok().body("The profile picture file has been uploaded");
     }
+
+
+
 
     @GetMapping("/{petId}/profileImage")
     public ResponseEntity<Object> downloadProfileImage(@PathVariable Long petId) throws IOException {
@@ -99,10 +109,12 @@ public class PetController {
 
 
     @PutMapping("/{petId}/profileImage")
-    public ResponseEntity<String> updateProfileImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long petId) throws IOException {
-        petService.updateProfileImage(petId, multipartFile);
+    public ResponseEntity<String> updateProfileImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long petId, Principal principal) throws IOException {
+        String username = principal.getName();
+        petService.updateProfileImage(petId, multipartFile, username);
         return ResponseEntity.ok().body("The profile picture file has been updated");
     }
+
 
     @GetMapping("/{petId}/owner")
     public ResponseEntity<String> getOwner(@PathVariable Long petId) {
