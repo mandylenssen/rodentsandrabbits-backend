@@ -1,6 +1,4 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class LogbookDto {

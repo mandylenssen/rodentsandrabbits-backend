@@ -1,10 +1,6 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.repositories;
-
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos.BookingDto;
 import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-
 import java.util.Date;
 import java.util.List;
 

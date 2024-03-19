@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.net.URI;
 import java.security.Principal;
@@ -57,7 +58,6 @@ public class PetController {
         return ResponseEntity.ok().body(pet);
     }
 
-
     @PutMapping("/{petId}")
     public ResponseEntity<PetDto> updatePet(@PathVariable Long petId, @RequestBody PetDto petDto, Principal principal) {
         String username = principal.getName();
@@ -65,14 +65,11 @@ public class PetController {
         return ResponseEntity.ok().body(updatedPetDto);
     }
 
-
     @GetMapping("/user")
     public ResponseEntity<List<PetDto>> getPetsByUsername(Principal principal) {
         List<PetDto> dtos = petService.getAllPetsByUsername(principal.getName());
         return ResponseEntity.ok().body(dtos);
     }
-
-
 
     @DeleteMapping("/{petId}")
     public ResponseEntity<Object> deletePet(@PathVariable Long petId, Principal principal, Authentication authentication) {
@@ -84,16 +81,12 @@ public class PetController {
         return ResponseEntity.noContent().build();
     }
 
-
     @PostMapping("/{petId}/profileImage")
     public ResponseEntity<String> uploadProfileImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long petId, Principal principal) throws IOException {
         String username = principal.getName();
         petService.addProfileImage(petId, multipartFile.getBytes(), multipartFile.getOriginalFilename(), multipartFile.getContentType(), username);
         return ResponseEntity.ok().body("The profile picture file has been uploaded");
     }
-
-
-
 
     @GetMapping("/{petId}/profileImage")
     public ResponseEntity<Object> downloadProfileImage(@PathVariable Long petId) throws IOException {
@@ -107,14 +100,12 @@ public class PetController {
         return ResponseEntity.ok().contentType(mediaType).body(image);
     }
 
-
     @PutMapping("/{petId}/profileImage")
     public ResponseEntity<String> updateProfileImage(@RequestParam("file") MultipartFile multipartFile, @PathVariable Long petId, Principal principal) throws IOException {
         String username = principal.getName();
         petService.updateProfileImage(petId, multipartFile, username);
         return ResponseEntity.ok().body("The profile picture file has been updated");
     }
-
 
     @GetMapping("/{petId}/owner")
     public ResponseEntity<String> getOwner(@PathVariable Long petId) {

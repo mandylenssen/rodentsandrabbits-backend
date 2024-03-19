@@ -26,6 +26,9 @@ public class Pet {
     private String medication;
     private String diet;
 
+    @Column(nullable = false)
+    private boolean enabled = true;
+
     @ManyToOne
     @JoinColumn(name = "owner")
     private User owner;
@@ -33,13 +36,13 @@ public class Pet {
     @OneToOne(mappedBy = "pet", cascade = CascadeType.ALL)
     private ImageData profileImageData;
 
-
     @ManyToMany(mappedBy = "pets")
     private Set<Booking> bookings = new HashSet<>();
 
     @ManyToMany(mappedBy = "pets")
     @JsonIgnore
     List<LogbookLog> logbookLogs;
+
 
     public Pet() {
     }
@@ -152,5 +155,13 @@ public class Pet {
 
     public void setProfileImageData(ImageData imageData) {
         this.profileImageData = imageData;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

@@ -53,7 +53,6 @@ public class LogbookService {
         return transferToDto(logbook);
     }
 
-
     public LogbookDto getLogbookDtoById(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
@@ -100,7 +99,6 @@ public class LogbookService {
         return transferToLogbookLogDto(savedLog);
     }
 
-
     public void deleteLogFromLogbook(Long logbookId, Long logId) {
         deleteLog(logId);
     }
@@ -121,12 +119,20 @@ public class LogbookService {
         LogbookLog log = logbookLogRepository.findById(logId)
                 .orElseThrow(() -> new EntityNotFoundException("Log not found for id: " + logId));
 
-        List<ImageData> imageDataList = log.getLogbookImageData();
-
         ImageData imageData = new ImageData(multipartFile.getBytes(), multipartFile.getName(), multipartFile.getContentType());
         imageData.setLogbookLog(log);
-        imageDataList.add(imageData);
-        log.setLogbookImageData(imageDataList);
+        log.setLogbookImageData(imageData);
+
+        logbookLogRepository.save(log);
+    }
+
+    public void addImageToLog(Long logId, byte[] fileBytea, String fileName, String fileType) throws IOException {
+        LogbookLog log = logbookLogRepository.findById(logId)
+                .orElseThrow(() -> new EntityNotFoundException("Log not found for id: " + logId));
+
+        ImageData imageData = new ImageData(fileBytea, fileName, fileType);
+        imageData.setLogbookLog(log);
+        log.setLogbookImageData(imageData);
 
         logbookLogRepository.save(log);
     }
@@ -137,16 +143,14 @@ public class LogbookService {
         return logbook.getId();
     }
 
-
-private LogbookLogDto transferToLogbookLogDto(LogbookLog log) {
-    LogbookLogDto dto = new LogbookLogDto();
-    dto.setId(log.getId());
-    dto.setDate(log.getDate());
-    dto.setEntry(log.getEntry());
-    dto.setPetsIds(log.getPets().stream().map(Pet::getId).collect(Collectors.toList()));
-    return dto;
-}
-
+    private LogbookLogDto transferToLogbookLogDto(LogbookLog log) {
+        LogbookLogDto dto = new LogbookLogDto();
+        dto.setId(log.getId());
+        dto.setDate(log.getDate());
+        dto.setEntry(log.getEntry());
+        dto.setPetsIds(log.getPets().stream().map(Pet::getId).collect(Collectors.toList()));
+        return dto;
+    }
 
     private LogbookLog transferToLogbookLog(LogbookLogDto logDto, Logbook logbook) {
         LogbookLog log = new LogbookLog();
@@ -197,11 +201,7 @@ private LogbookLogDto transferToLogbookLogDto(LogbookLog log) {
             throw new AuthorizationServiceException("You do not have permission to access this image.");
         }
 
-        List<ImageData> imageDataList = log.getLogbookImageData();
-        if (imageDataList.isEmpty()) {
-            return null;
-        }
-        return imageDataList.get(0);
+        return log.getLogbookImageData();
     }
 
 

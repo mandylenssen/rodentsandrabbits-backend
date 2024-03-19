@@ -33,12 +33,7 @@ public class UserController {
     public ResponseEntity<UserDto> getUser(@PathVariable("username") String username) {
 
         UserDto optionalUser = userService.getUser(username);
-
-
         return ResponseEntity.ok().body(optionalUser);
 
     }
-
-
-
 }

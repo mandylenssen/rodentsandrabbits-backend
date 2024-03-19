@@ -47,8 +47,6 @@ public class UserService {
 
 
     public String createUser(UserDto userDto) {
-        String randomString = RandomStringGenerator.generateAlphaNumeric(20);
-        userDto.setApikey(randomString);
         userDto.setUsername(userDto.email);
         userDto.setEnabled(true);
 
@@ -80,8 +78,6 @@ public class UserService {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setPhoneNumber(userDto.getPhoneNumber());
-        user.setEnabled(userDto.getEnabled());
-        user.setApikey(userDto.getApikey());
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
         user.setAuthorities(userDto.getAuthorities());
@@ -99,20 +95,9 @@ public class UserService {
         dto.firstName = user.getFirstName();
         dto.lastName = user.getLastName();
         dto.phoneNumber = user.getPhoneNumber();
-        dto.enabled = user.isEnabled();
-        dto.apikey = user.getApikey();
         dto.email = user.getEmail();
         dto.authorities = user.getAuthorities();
 
         return dto;
     }
-
-        public void addAuthority(String username, String authority) {
-
-            if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-            User user = userRepository.findById(username).get();
-            user.addAuthority(new Authority(username, authority));
-            userRepository.save(user);
-        }
-
-        }
+}

@@ -12,7 +12,6 @@ public class UserDto {
     public String lastName;
     public String phoneNumber;
     public Boolean enabled;
-    public String apikey;
     public Set<Authority> authorities;
     public String email;
 
@@ -65,14 +64,6 @@ public class UserDto {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public String getApikey() {
-        return apikey;
-    }
-
-    public void setApikey(String apikey) {
-        this.apikey = apikey;
     }
 
     public Set<Authority> getAuthorities() {

@@ -25,7 +25,6 @@ public class LogbookController {
         this.logbookService = logbookService;
     }
 
-
     @GetMapping("/user/{username}")
     public ResponseEntity<LogbookDto> getLogbookForUser(@PathVariable String username) {
         LogbookDto logbookDto = logbookService.getLogbookForUser(username);
@@ -73,8 +72,6 @@ public class LogbookController {
 
         return ResponseEntity.ok().contentType(mediaType).body(image);
     }
-
-
 }
 
 
