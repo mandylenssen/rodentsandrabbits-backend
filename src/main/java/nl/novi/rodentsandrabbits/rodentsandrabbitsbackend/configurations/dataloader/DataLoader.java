@@ -30,25 +30,25 @@ public class DataLoader implements InitializingBean {
 
     private void initializeLogbookFileData() {
         try {
-            byte[] logphoto1 = Files.readAllBytes(Path.of("src/main/resources/images/Squeek_rat.png"));
+            byte[] logphoto1 = Files.readAllBytes(Path.of("src/main/resources/images/Whiskers_rat.png"));
 
-            logbookService.addImageToLog(1L, logphoto1, "Squeek_rat.png", "image/png");
+            logbookService.addImageToLog(1L, logphoto1, "Whiskers_rat.png", "image/png");
 
-            byte[] logphoto2 = Files.readAllBytes(Path.of("src/main/resources/images/Whiskers_rat.png"));
+            byte[] logphoto2 = Files.readAllBytes(Path.of("src/main/resources/images/Logbook_photo_mouse.png"));
 
-            logbookService.addImageToLog(2L, logphoto2, "Whiskers_rat.png", "image/png");
+            logbookService.addImageToLog(2L, logphoto2, "Logbook_photo_mouse.png", "image/png");
 
             byte[] logphoto3 = Files.readAllBytes(Path.of("src/main/resources/images/Nimbus_rat.png"));
 
             logbookService.addImageToLog(3L, logphoto3, "Nimbus_rat.png", "image/png");
 
-            byte[] logphoto4 = Files.readAllBytes(Path.of("src/main/resources/images/Nibbles_mouse.png"));
+            byte[] logphoto4 = Files.readAllBytes(Path.of("src/main/resources/images/Squeek_rat.png"));
 
-            logbookService.addImageToLog(4L, logphoto4, "Nibbles_mouse.png", "image/png");
+            logbookService.addImageToLog(4L, logphoto4, "Squeek_rat.png", "image/png");
 
-            byte[] logphoto5 = Files.readAllBytes(Path.of("src/main/resources/images/Peanut_mouse.png"));
+            byte[] logphoto5 = Files.readAllBytes(Path.of("src/main/resources/images/Logbook_photo_rats.png"));
 
-            logbookService.addImageToLog(5L, logphoto5, "Peanut_mouse.png", "image/png");
+            logbookService.addImageToLog(5L, logphoto5, "Logbook_photo_rats.png", "image/png");
 
 
         } catch (IOException e) {
