@@ -47,7 +47,7 @@ public class PetService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
-        Pet pet = petRepository.findById(petId).orElseThrow(() -> new NoSuchElementException("Pet not found"));
+        Pet pet = petRepository.findByIdAndEnabledTrue(petId).orElseThrow(() -> new NoSuchElementException("Pet not found"));
 
         if (!username.equals(pet.getOwner().getUsername()) && !isAdmin) {
             throw new AuthorizationServiceException("User is not authorized to update this pet");
@@ -66,14 +66,14 @@ public class PetService {
     }
 
     public PetDto getPet(long id) {
-        Pet pet = petRepository.findById(id).orElseThrow();
+        Pet pet = petRepository.findByIdAndEnabledTrue(id).orElseThrow();
 
         return transferToDto(pet);
     }
 
     public List<PetDto> getAllPets() {
-        List<Pet> pets = petRepository.findAll();
-return transferPetListToDtoList(pets);
+        List<Pet> pets = petRepository.findAllByEnabledTrue();
+        return transferPetListToDtoList(pets);
 
     }
 
@@ -92,7 +92,7 @@ public PetDto getPetById(long id) {
     String currentUsername = authentication.getName();
     boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
-    Pet pet = petRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Pet not found with ID " + id));
+    Pet pet = petRepository.findByIdAndEnabledTrue(id).orElseThrow(() -> new NoSuchElementException("Pet not found with ID " + id));
 
     if (!pet.getOwner().getUsername().equals(currentUsername) && !isAdmin) {
         throw new AuthorizationServiceException("User is not authorized to view this pet");
@@ -132,23 +132,25 @@ public PetDto getPetById(long id) {
     }
 
     public List<PetDto> getAllPetsByUsername(String username) {
-    List<Pet> pets = petRepository.findAllByOwnerUsername(username);
+    List<Pet> pets = petRepository.findAllByOwnerUsernameAndEnabledTrue(username);
     return transferPetListToDtoList(pets);
     }
 
 
 
     public void deletePet(Long petId, String name, boolean isAdmin) {
-        Pet pet = petRepository.findById(petId).orElseThrow();
+        Pet pet = petRepository.findByIdAndEnabledTrue(petId).orElseThrow();
         if (!pet.getOwner().getUsername().equals(name) && !isAdmin) {
             throw new AuthorizationServiceException("Pet does not belong to user or user is not admin");
         }
-        petRepository.deleteById(petId);
+
+        pet.setEnabled(false);
+        petRepository.save(pet);
     }
 
 
     public void addProfileImage(Long petId, byte[] bytea, String fileName, String fileType, String username) throws IOException {
-        Pet pet = petRepository.findById(petId).orElseThrow(() -> new NoSuchElementException("Pet not found with ID " + petId));
+        Pet pet = petRepository.findByIdAndEnabledTrue(petId).orElseThrow(() -> new NoSuchElementException("Pet not found with ID " + petId));
 
         if (!pet.getOwner().getUsername().equals(username) && !userHasRole("ROLE_ADMIN", username)) {
             throw new AuthorizationServiceException("Not authorized to add profile image to this pet");
@@ -177,7 +179,7 @@ public PetDto getPetById(long id) {
         String currentUsername = authentication.getName();
         boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
-        Pet pet = petRepository.findById(petId)
+        Pet pet = petRepository.findByIdAndEnabledTrue(petId)
                 .orElseThrow(() -> new IllegalStateException("Pet not found with id: " + petId));
 
         if (!pet.getOwner().getUsername().equals(currentUsername) && !isAdmin) {
@@ -192,7 +194,7 @@ public PetDto getPetById(long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
-        Pet pet = petRepository.findById(petId)
+        Pet pet = petRepository.findByIdAndEnabledTrue(petId)
                 .orElseThrow(() -> new NoSuchElementException("Pet not found with ID " + petId));
 
         if (!pet.getOwner().getUsername().equals(username) && !isAdmin) {
@@ -208,7 +210,7 @@ public PetDto getPetById(long id) {
     }
 
     public String getOwner(Long petId) {
-        Pet pet = petRepository.findById(petId).orElseThrow();
+        Pet pet = petRepository.findByIdAndEnabledTrue(petId).orElseThrow();
         return pet.getOwner().getUsername();
     }
 }

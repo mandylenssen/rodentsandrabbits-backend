@@ -22,7 +22,6 @@ public class User {
     private String lastName;
     private String phoneNumber;
 
-
     @OneToMany(
             targetEntity = Authority.class,
             mappedBy = "username",
@@ -30,13 +29,6 @@ public class User {
             orphanRemoval = true,
             fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<>();
-
-
-    @Column(nullable = false)
-    private boolean enabled = true;
-
-    @Column
-    private String apikey;
 
 
     @Column
@@ -100,22 +92,6 @@ public class User {
 
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getApikey() {
-        return apikey;
-    }
-
-    public void setApikey(String apikey) {
-        this.apikey = apikey;
     }
 
     public void addAuthority(Authority authority) {

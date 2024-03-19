@@ -24,8 +24,7 @@ public class ImageData {
     @JoinColumn(name = "pet_id", referencedColumnName = "id")
     private Pet pet;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "logbook_log_id", referencedColumnName = "id")
     private LogbookLog logbookLog;
 

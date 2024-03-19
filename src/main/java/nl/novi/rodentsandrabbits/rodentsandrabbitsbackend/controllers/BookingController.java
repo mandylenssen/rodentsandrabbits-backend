@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
@@ -34,12 +33,12 @@ public class BookingController {
 
     @GetMapping("/availability")
     public ResponseEntity<Boolean> checkAvailability(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
-                                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+                                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
         boolean available = bookingService.isDateAvailable(startDate, endDate);
         return ResponseEntity.ok(available);
     }
 
-   @GetMapping("/unavailable-dates")
+    @GetMapping("/unavailable-dates")
     public ResponseEntity<List<Date>> getUnavailableDates() {
         List<Date> unavailableDates = bookingService.getUnavailableDates();
         return ResponseEntity.ok().body(unavailableDates);
@@ -68,6 +67,4 @@ public class BookingController {
         bookingService.updateBooking(dto);
         return ResponseEntity.noContent().build();
     }
-
-
 }

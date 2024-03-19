@@ -63,13 +63,10 @@ public class BookingService {
         List<LocalDate> datesToCheck = getDatesBetween(startDate, endDate);
         List<LocalDate> unavailableDates = getUnavailableDates().stream()
                 .map(date -> date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
-                .collect(Collectors.toList());
+                .toList();
 
         return Collections.disjoint(datesToCheck, unavailableDates);
     }
-
-
-
 
     public List<BookingDto> getAllBookings() {
         List<Booking> bookings = bookingRepository.findAll();
@@ -81,7 +78,6 @@ public class BookingService {
 
         return bookingDtos;
     }
-
 
     public List<BookingDto> getAllBookingsForUser(String requestedUsername) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -124,8 +120,6 @@ public class BookingService {
         return booking;
     }
 
-
-
     private BookingDto transferToBookingDto(Booking booking) {
         return new BookingDto(
                 booking.getId(),
@@ -137,42 +131,17 @@ public class BookingService {
         );
     }
 
-
-
-//    public List<Date> getUnavailableDates() {
-//        List<Booking> bookings = bookingRepository.findAll();
-//        Map<Date, Integer> bookingCounts = new HashMap<>();
-//
-//        for (Booking booking : bookings) {
-//            List<Date> dates = getDatesBetween(booking.getStartDate(), booking.getEndDate());
-//            for (Date date : dates) {
-//                bookingCounts.put(date, bookingCounts.getOrDefault(date, 0) + 1);
-//            }
-//        }
-//
-//        List<Date> unavailableDates = new ArrayList<>();
-//        for (Map.Entry<Date, Integer> entry : bookingCounts.entrySet()) {
-//            if (entry.getValue() >= 5) {
-//                unavailableDates.add(entry.getKey());
-//            }
-//        }
-//
-//        return unavailableDates.stream().distinct().collect(Collectors.toList());
-//    }
-
     public List<Date> getUnavailableDates() {
         List<Booking> bookings = bookingRepository.findAll();
         Map<LocalDate, Integer> bookingCounts = new HashMap<>();
 
         for (Booking booking : bookings) {
-            // Generate all dates between startDate and endDate, inclusive
             List<LocalDate> dates = getDatesBetween(booking.getStartDate(), booking.getEndDate());
             for (LocalDate date : dates) {
                 bookingCounts.put(date, bookingCounts.getOrDefault(date, 0) + 1);
             }
         }
 
-        // Find dates where the booking count is 5 or more
         List<Date> unavailableDates = bookingCounts.entrySet().stream()
                 .filter(entry -> entry.getValue() >= 5)
                 .map(entry -> Date.from(entry.getKey().atStartOfDay(ZoneId.systemDefault()).toInstant()))
@@ -191,19 +160,6 @@ public class BookingService {
         }
         return totalDates;
     }
-
-//    private List<Date> getDatesBetween(Date startDate, Date endDate) {
-//        List<Date> dates = new ArrayList<>();
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(startDate);
-//
-//        while (calendar.getTime().before(endDate) || calendar.getTime().equals(endDate)) {
-//            dates.add(calendar.getTime());
-//            calendar.add(Calendar.DATE, 1);
-//        }
-//
-//        return dates;
-//    }
 
     public List<BookingDto> getCurrentlyPresentPets() {
         List<Booking> bookings = bookingRepository.findAll();

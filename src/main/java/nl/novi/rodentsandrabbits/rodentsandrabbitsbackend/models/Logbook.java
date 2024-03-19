@@ -1,4 +1,5 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
+
 import jakarta.persistence.*;
 
 
@@ -12,7 +13,7 @@ public class Logbook {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (name = "user_name")
+    @Column(name = "user_name")
     private String userName;
 
     @OneToMany(mappedBy = "logbook", cascade = CascadeType.ALL)

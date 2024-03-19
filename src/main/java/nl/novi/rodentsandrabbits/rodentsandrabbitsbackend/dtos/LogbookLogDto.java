@@ -1,6 +1,5 @@
 package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.dtos;
 
-import nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models.Pet;
 
 import java.util.ArrayList;
 import java.util.Date;

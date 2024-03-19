@@ -2,6 +2,7 @@ package nl.novi.rodentsandrabbits.rodentsandrabbitsbackend.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,8 +32,8 @@ public class LogbookLog {
     @JoinColumn(name = "logbook_id", nullable = false)
     private Logbook logbook;
 
-    @OneToMany(mappedBy = "logbookLog", cascade = CascadeType.ALL)
-    private List<ImageData> logbookImageData;
+    @OneToOne(mappedBy = "logbookLog", cascade = CascadeType.ALL)
+    private ImageData logbookImageData;
 
     public Long getId() {
         return id;
@@ -74,11 +75,11 @@ public class LogbookLog {
         this.logbook = logbook;
     }
 
-    public List<ImageData> getLogbookImageData() {
+    public ImageData getLogbookImageData() {
         return logbookImageData;
     }
 
-    public void setLogbookImageData(List<ImageData> logbookImageData) {
+    public void setLogbookImageData(ImageData logbookImageData) {
         this.logbookImageData = logbookImageData;
     }
 }
