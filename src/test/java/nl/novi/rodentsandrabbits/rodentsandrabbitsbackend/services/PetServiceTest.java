@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -75,7 +76,7 @@ class PetServiceTest {
         Pet pet1 = new Pet(1L, "Fluffy", birthday, "rat", "male", "Details about Fluffy", "", "Pet1 diet", owner);
         Pet pet2 = new Pet(2L, "Squeaky", birthday, "rat", "female", "Details about Squeaky", "", "Pet2 diet", owner);
 
-        when(petRepository.findAll()).thenReturn(List.of(pet1, pet2));
+        when(petRepository.findAllByEnabledTrue()).thenReturn(List.of(pet1, pet2));
 
         List<PetDto> pets = petService.getAllPets();
 
@@ -91,7 +92,7 @@ class PetServiceTest {
         Pet pet1 = new Pet(1L, "Fluffy", new Date(), "rat", "male", "Details about Fluffy", "", "Pet1 diet", owner);
         Pet pet2 = new Pet(2L, "Nibbles", new Date(), "hamster", "female", "Details about Nibbles", "", "Pet2 diet", owner);
 
-        when(petRepository.findAllByOwnerUsername(username)).thenReturn(List.of(pet1, pet2));
+        when(petRepository.findAllByOwnerUsernameAndEnabledTrue(username)).thenReturn(List.of(pet1, pet2));
 
         List<PetDto> resultDtos = petService.getAllPetsByUsername(username);
 
@@ -107,7 +108,7 @@ class PetServiceTest {
         User owner = new User();
         Pet pet = new Pet(1L, "Fluffy", new Date(), "rat", "male", "Details about Fluffy", "", "Pet1 diet", owner);
 
-        when(petRepository.findById(id)).thenReturn(java.util.Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(id)).thenReturn(java.util.Optional.of(pet));
 
         PetDto resultDto = petService.getPet(id);
 
@@ -158,7 +159,7 @@ class PetServiceTest {
         Date birthday = sdf.parse("2019-01-01");
         Pet pet = new Pet(1L, "Nibbles", birthday, "rat", "female", "Details about Nibbles", "", "Pet2 diet", owner);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
         String ownerUserName = petService.getOwner(1L);
 
         assertEquals(ownerUserName, pet.getOwner().getUsername());
@@ -176,7 +177,7 @@ class PetServiceTest {
 
         PetDto petDtoInput = new PetDto(1L, "Sjaak", birthday, "rat", "female", "Details about Nibbles", "", "Pet2 diet", "user@test.com");
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
         when(petRepository.save(any(Pet.class))).thenReturn(petUpdate);
 
         PetDto result = petService.updatePet(1L, petDtoInput, owner.getUsername());
@@ -197,7 +198,7 @@ class PetServiceTest {
 
         PetDto petDtoInput = new PetDto(1L, "Sjaak", birthday, "rat", "female", "Details about Nibbles", "", "Pet2 diet", unAuthorizedUsername);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
 
         assertThrows(AuthorizationServiceException.class, () -> {
             petService.updatePet(1L, petDtoInput, petDtoInput.getOwnerUsername());
@@ -214,7 +215,7 @@ class PetServiceTest {
         Date birthday = sdf.parse("2019-01-01");
         Pet pet = new Pet(1L, "Nibbles", birthday, "rat", "female", "Details about Nibbles", "", "Pet2 diet", owner);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
 
         PetDto result = petService.getPetById(1L);
 
@@ -232,7 +233,7 @@ class PetServiceTest {
         Date birthday = sdf.parse("2019-01-01");
         Pet pet = new Pet(1L, "Nibbles", birthday, "rat", "female", "Details about Nibbles", "", "Pet2 diet", owner);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
 
         assertThrows(AuthorizationServiceException.class, () -> {
             petService.getPetById(1L);
@@ -246,22 +247,26 @@ class PetServiceTest {
             petService.getPetById(1L);
         });
     }
+
     @Test
-    @DisplayName("Delete pet from the database.")
-    public void deletePetTest() {
+    @DisplayName("Disable a pet in the database.")
+    public void disablePetTest() {
         String username = "user@test.com";
         User owner = new User();
         owner.setUsername(username);
         Pet pet = new Pet(1L, "Fluffy", new Date(), "rat", "male", "Details about Fluffy", "", "Pet1 diet", owner);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
-
-        doNothing().when(petRepository).deleteById(1L);
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
+        ArgumentCaptor<Pet> petCaptor = ArgumentCaptor.forClass(Pet.class);
 
         petService.deletePet(1L, username, false);
 
-        verify(petRepository, times(1)).deleteById(1L);
+        verify(petRepository).save(petCaptor.capture());
+        Pet disabledPet = petCaptor.getValue();
+
+        assertFalse(disabledPet.isEnabled(), "The pet should be marked as disabled.");
     }
+
 
     @Test
     @DisplayName("Throw exception when unauthorized to delete pet from the database.")
@@ -273,7 +278,7 @@ class PetServiceTest {
         owner.setUsername(username);
         Pet pet = new Pet(1L, "Fluffy", new Date(), "rat", "male", "Details about Fluffy", "", "Pet1 diet", owner);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
 
         assertThrows(AuthorizationServiceException.class, () -> {
             petService.deletePet(1L, unAuthorizedUsername, false);
@@ -293,7 +298,7 @@ class PetServiceTest {
         imageData.setType("image/jpeg");
         pet.setProfileImageData(imageData);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
 
         ImageData result = petService.getProfileImage(1L);
 
@@ -316,7 +321,7 @@ class PetServiceTest {
         imageData.setType("image/jpeg");
         pet.setProfileImageData(imageData);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
 
         assertThrows(AuthorizationServiceException.class, () -> {
             petService.getProfileImage(1L);
@@ -343,7 +348,7 @@ class PetServiceTest {
         imageDataUpdate.setType("image/jpeg");
         petUpdate.setProfileImageData(imageDataUpdate);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
 
         MockMultipartFile mockFile = new MockMultipartFile(
                 "Fluffy2.jpg",
@@ -353,7 +358,7 @@ class PetServiceTest {
         );
 
         petService.updateProfileImage(1L, mockFile, username);
-        when(petRepository.findById(1L)).thenReturn(Optional.of(petUpdate));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(petUpdate));
 
         ImageData result = petService.getProfileImage(1L);
 
@@ -382,7 +387,7 @@ class PetServiceTest {
         imageDataUpdate.setType("image/jpeg");
         petUpdate.setProfileImageData(imageDataUpdate);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
 
         MockMultipartFile mockFile = new MockMultipartFile(
                 "Fluffy2.jpg",
@@ -391,7 +396,7 @@ class PetServiceTest {
                 "Banaan".getBytes()
         );
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(petUpdate));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(petUpdate));
 
         assertThrows(AuthorizationServiceException.class, () -> {
             petService.updateProfileImage(1L, mockFile, UnauthorizedUsername);
@@ -414,7 +419,7 @@ class PetServiceTest {
         imageData.setImageData("Banaan".getBytes());
         pet.setProfileImageData(imageData);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
 
         assertThrows(AuthorizationServiceException.class, () -> {
             petService.addProfileImage(1L, "Banaan".getBytes(), "Fluffy2.jpg", "image/jpeg", UnauthorizedUsername);
@@ -437,7 +442,7 @@ class PetServiceTest {
         imageData.setImageData("Banaan".getBytes());
         pet.setProfileImageData(imageData);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.findByIdAndEnabledTrue(1L)).thenReturn(Optional.of(pet));
 
         assertDoesNotThrow(() -> {
             petService.addProfileImage(1L, "Banaan".getBytes(), "Fluffy2.jpg", "image/jpeg", systemUsername);

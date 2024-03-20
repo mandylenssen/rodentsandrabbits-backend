@@ -29,10 +29,11 @@ INSERT INTO bookings_pets (bookings_id, pets_id) VALUES (1,1), (1, 2), (1, 3), (
 
 
 
-INSERT INTO logbook_logs (date, logbook_id, entry) VALUES   ('2024-02-20', 1, 'The rats were brought in their cage, and they are doing well. They are eating and drinking normally, and they seem to be adjusting to their new environment.'),
-                                                                ('2024-02-21', 1, 'The rats are very active and playful. They are enjoying their time in the play area, and they are getting along well with each other.'),
-                                                                ('2024-02-22', 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.'),
-                                                                ('2024-02-23', 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.'),
-                                                                ('2024-02-24', 1, 'The rats are doing well. They are eating and drinking normally, and they are very friendly and social.');
+INSERT INTO logbook_logs (date, logbook_id, entry) VALUES   ('2024-03-10', 1, 'Today was a big day! We welcomed our new rat friends. They seemed a bit shy at first but quickly started sniffing around and settling into their new digs. It was adorable seeing how quickly they got comfortable. They also chowed down on their food, which is always a good sign..'),
+                                                                ('2024-03-11', 1, 'The rats had the time of their lives in the play area today. They were climbing all over everything, and it seems they''ve taken a liking to the tunnel tubes. Watching them explore and play is just the best; it really brings the place to life. And we found out they absolutely love the special treats we gave them.'),
+                                                                ('2024-03-12', 1, 'It’s becoming clearer by the day that these little guys are super social, both with us and each other. They now come to the cage door when we walk by, curious about what we’re up to. We spent some time today getting to know their personalities, and it''s surprising how unique each of them is.'),
+                                                                ('2024-03-13', 1, 'We introduced some new toys into their cage today, and it was a hit! They were particularly fascinated by a hanging toy we put up. It’s heartwarming to see them play and look forward to new experiences. Also, we scheduled some extra cuddle time, and they seemed to really enjoy the contact.'),
+                                                                ('2024-03-14', 1, 'Our little adventurers are getting bolder by the day. Today, they tried out a new climbing frame we set up for them, and it was a big success. It seems their curiosity knows no bounds, and we’re doing our best to keep providing them with new and exciting experiences. It’s amazing to see how they grow and develop in such a short time.');
+
 
 INSERT INTO logbook_log_pets (logbook_log_id, pet_id) VALUES (1,1), (1,2), (1,3), (2,1), (2,2), (2,3), (3,1), (3,2), (3,3), (4,1), (4,2), (4,3), (5,1), (5,2), (5,3);
