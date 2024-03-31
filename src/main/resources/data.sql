@@ -21,8 +21,8 @@ INSERT INTO pets (name, birthday, species, gender, details, diet, owner, enabled
 
 
 
-INSERT INTO bookings (start_date, end_date, additional_info, is_confirmed) VALUES ('2024-02-20', '2024-03-23', 'The rats will be brought in their own spacious cage, equipped with bedding, food, and water containers', false),
-                                                                                    ('2024-02-10', '2024-03-10', 'The mice will be brought in their own comfortable enclosure, furnished with bedding, food, and water bowls', true);
+INSERT INTO bookings (start_date, end_date, additional_info, is_confirmed) VALUES ('2024-03-20', '2024-07-23', 'The rats will be brought in their own spacious cage, equipped with bedding, food, and water containers', false),
+                                                                                    ('2024-03-10', '2024-07-10', 'The mice will be brought in their own comfortable enclosure, furnished with bedding, food, and water bowls', true);
 
 
 INSERT INTO bookings_pets (bookings_id, pets_id) VALUES (1,1), (1, 2), (1, 3), (2, 4), (2, 5);
